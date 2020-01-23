@@ -13,12 +13,15 @@ internal class FlowUseCaseTest {
     fun testFinite() = coroutineRule.runBlocking {
         FlowUseCase().invoke().test()
             .assertValues(1, 2, 3)
+            .assertValueCount(3)
+            .assertTerminated()
     }
 
     @Test
     fun testInfinite() = coroutineRule.runBlocking {
         InfiniteFlowUseCase().invoke().test()
             .assertValues(1, 2, 3)
+            .assertValueCount(3)
     }
 
 }

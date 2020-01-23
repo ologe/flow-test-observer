@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withTimeout
 
-fun <T> Flow<T>.test(timeout: Long = 50): FlowTestObserver<T> {
+fun <T> Flow<T>.test(timeout: Long = 10): FlowTestObserver<T> {
     return FlowTestObserverImpl(this, timeout)
 }
 
@@ -19,7 +19,7 @@ internal class FlowTestObserverImpl<T>(
     private var _isFinite: Boolean? = null
     private var _delegate: FlowTestObserver<T>? = null
 
-    private suspend fun isFinite(): Boolean {
+    override suspend fun isFinite(): Boolean {
         if (_isFinite == null) {
             _isFinite = assertIsFinite()
         }
@@ -28,31 +28,58 @@ internal class FlowTestObserverImpl<T>(
 
     private suspend fun delegate(): FlowTestObserver<T> {
         if (_delegate == null) {
-            if (isFinite()) {
-                _delegate =
-                    FiniteFlowObserver(flow)
+            _delegate = if (isFinite()) {
+                FiniteFlowObserver(flow)
             } else {
-                _delegate =
-                    InfiniteFlowObserver(flow)
+                InfiniteFlowObserver(flow, timeout)
             }
         }
         return _delegate!!
     }
 
     private suspend fun assertIsFinite(): Boolean {
+        var isFinite = false
         try {
             withTimeout(timeout) {
                 flow.toList()
-                return@withTimeout true
+                isFinite = true
             }
         } catch (ignored: IllegalStateException) {
 
         }
-        return false
+        return isFinite
     }
 
-    override suspend fun assertValues(vararg expected: T) {
-        delegate().assertValues(*expected)
+    override suspend fun values(): List<T> {
+        return delegate().values()
     }
 
+    override suspend fun valuesCount(): Int {
+        return delegate().valuesCount()
+    }
+
+    override suspend fun assertValues(vararg values: T): FlowTestObserver<T> {
+        delegate().assertValues(*values)
+        return this
+    }
+
+    override suspend fun assertNoValues(): FlowTestObserver<T> {
+        delegate().assertNoValues()
+        return this
+    }
+
+    override suspend fun assertValueCount(count: Int): FlowTestObserver<T> {
+        delegate().assertValueCount(count)
+        return this
+    }
+
+    override suspend fun assertTerminated(): FlowTestObserver<T> {
+        delegate().assertTerminated()
+        return this
+    }
+
+    override suspend fun assertNotTerminated(): FlowTestObserver<T> {
+        delegate().assertNotTerminated()
+        return this
+    }
 }
