@@ -1,4 +1,4 @@
-package dev.olog.flow.test.observer.impl.impl
+package dev.olog.flow.test.observer.impl
 
 import dev.olog.flow.test.observer.interactors.InfiniteFlowUseCase
 import dev.olog.flow.test.observer.test
