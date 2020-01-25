@@ -19,6 +19,11 @@ internal class FiniteFlowTestObserverTest {
     }
 
     @Test
+    fun `test isCompleted`() = runBlockingTest {
+        assertTrue("should be completed", sut().test().isFinite())
+    }
+
+    @Test
     fun `test values`() = runBlockingTest {
         assertEquals(listOf(1, 2, 3), sut().test().values())
     }

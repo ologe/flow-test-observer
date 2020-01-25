@@ -7,6 +7,7 @@ import junit.framework.Assert.assertFalse
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert
 import org.junit.Test
 
 class InfiniteFlowTestObserverTest {
@@ -18,6 +19,11 @@ class InfiniteFlowTestObserverTest {
     @Test
     fun `test isFinite`() = runBlockingTest {
         assertFalse("should be infinite", sut().test().isFinite())
+    }
+
+    @Test
+    fun `test isCompleted`() = runBlockingTest {
+        assertFalse("should not be completed", sut().test().isFinite())
     }
 
     @Test
