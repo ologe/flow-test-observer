@@ -11,7 +11,7 @@ internal abstract class BaseFlowTestObserver<T>(
 
     private var _values: List<T>? = null
 
-    suspend fun flowValues(): List<T> {
+    private suspend fun flowValues(): List<T> {
         if (_values == null) {
             _values = computeFlowValues(flow)
         }
