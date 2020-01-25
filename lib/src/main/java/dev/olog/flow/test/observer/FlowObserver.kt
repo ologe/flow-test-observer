@@ -23,13 +23,12 @@ import kotlinx.coroutines.withTimeout
  *      .assertValueCount(3)
  * ```
  */
-fun <T> Flow<T>.test(timeout: Long = 10): FlowTestObserver<T> {
-    return FlowTestObserverImpl(this, timeout)
+fun <T> Flow<T>.test(): FlowTestObserver<T> {
+    return FlowTestObserverImpl(this)
 }
 
 internal class FlowTestObserverImpl<T>(
-    private val flow: Flow<T>,
-    private val timeout: Long
+    private val flow: Flow<T>
 ) : FlowTestObserver<T> {
 
     private var _isFinite: Boolean? = null
@@ -45,7 +44,7 @@ internal class FlowTestObserverImpl<T>(
     private suspend fun checkIsFiniteImpl(): Boolean {
         var isFinite = false
         try {
-            withTimeout(timeout) {
+            withTimeout(Long.MAX_VALUE) { // workaround to skip all delays
                 flow.toList()
                 isFinite = true
             }
@@ -60,7 +59,7 @@ internal class FlowTestObserverImpl<T>(
             _delegate = if (checkIsFinite()) {
                 FiniteFlowTestObserver(flow)
             } else {
-                InfiniteFlowTestObserver(flow, timeout)
+                InfiniteFlowTestObserver(flow)
             }
         }
         return _delegate!!
