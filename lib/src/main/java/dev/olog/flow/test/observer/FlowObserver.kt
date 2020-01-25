@@ -1,7 +1,7 @@
 package dev.olog.flow.test.observer
 
-import dev.olog.flow.test.observer.impl.FiniteFlowObserver
-import dev.olog.flow.test.observer.impl.InfiniteFlowObserver
+import dev.olog.flow.test.observer.impl.FiniteFlowTestObserver
+import dev.olog.flow.test.observer.impl.InfiniteFlowTestObserver
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withTimeout
@@ -58,9 +58,9 @@ internal class FlowTestObserverImpl<T>(
     private suspend fun delegate(): FlowTestObserver<T> {
         if (_delegate == null) {
             _delegate = if (checkIsFinite()) {
-                FiniteFlowObserver(flow)
+                FiniteFlowTestObserver(flow)
             } else {
-                InfiniteFlowObserver(flow, timeout)
+                InfiniteFlowTestObserver(flow, timeout)
             }
         }
         return _delegate!!

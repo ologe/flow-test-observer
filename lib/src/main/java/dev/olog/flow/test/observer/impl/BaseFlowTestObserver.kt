@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import org.junit.Assert.assertEquals
 import java.util.Collections.unmodifiableList
 
-internal abstract class BaseFlowObserver<T>(
+internal abstract class BaseFlowTestObserver<T>(
     private val flow: Flow<T>
 ): FlowTestObserver<T> {
 

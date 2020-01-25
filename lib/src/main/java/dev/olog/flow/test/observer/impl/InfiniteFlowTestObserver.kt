@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeout
 import org.junit.Assert.fail
 
-internal class InfiniteFlowObserver<T>(
+internal class InfiniteFlowTestObserver<T>(
     flow: Flow<T>,
     private val timeout: Long
-) : BaseFlowObserver<T>(flow) {
+) : BaseFlowTestObserver<T>(flow) {
 
     override suspend fun computeFlowValues(flow: Flow<T>): List<T> {
         val result = mutableListOf<T>()

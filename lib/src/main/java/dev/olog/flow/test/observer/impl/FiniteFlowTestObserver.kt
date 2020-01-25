@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import org.junit.Assert.fail
 
-internal class FiniteFlowObserver<T>(
+internal class FiniteFlowTestObserver<T>(
     flow: Flow<T>
-) : BaseFlowObserver<T>(flow) {
+) : BaseFlowTestObserver<T>(flow) {
 
     override suspend fun computeFlowValues(flow: Flow<T>): List<T> {
         return flow.toList()
