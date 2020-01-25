@@ -1,24 +1,22 @@
-package dev.olog.flow.test.observer.impl
+package dev.olog.flow.test.observer
 
-import dev.olog.flow.test.observer.impl.interactors.InfiniteFlowUseCase
+import dev.olog.flow.test.observer.interactors.FiniteFlowUseCase
 import dev.olog.flow.test.observer.test
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertFalse
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.*
 import org.junit.Test
 
-class InfiniteFlowTestObserverTest {
+internal class FiniteFlowTestObserverTest {
 
     private val sut =
-        InfiniteFlowUseCase()
+        FiniteFlowUseCase()
 
     // region getters
 
     @Test
     fun `test isFinite`() = runBlockingTest {
-        assertFalse("should be infinite", sut().test().isFinite())
+        assertTrue("should be finite", sut().test().isFinite())
     }
 
     @Test
@@ -55,8 +53,7 @@ class InfiniteFlowTestObserverTest {
 
     @Test
     fun `test assertNoValues success`() = runBlockingTest {
-        val emptyFlow = callbackFlow<Int> { awaitClose() }
-        emptyFlow.test()
+        emptyFlow<Int>().test()
             .assertNoValues()
     }
 
@@ -78,28 +75,28 @@ class InfiniteFlowTestObserverTest {
             .assertValueCount(2)
     }
 
-    @Test(expected = AssertionError::class)
+    @Test
     fun `test assertTerminated`() = runBlockingTest {
         sut().test()
             .assertComplete()
     }
 
-    @Test
+    @Test(expected = AssertionError::class)
     fun `test assertNotTerminated`() = runBlockingTest {
         sut().test()
             .assertNotComplete()
     }
 
-    @Test(expected = AssertionError::class)
+    @Test
     fun `test assertIsFinite, success`() = runBlockingTest {
         sut().test().assertIsFinite()
     }
 
-    @Test
+    @Test(expected = AssertionError::class)
     fun `test assertIsNotFinite, fail`() = runBlockingTest {
         sut().test().assertIsNotFinite()
     }
 
     // endregion
 
-}
+} 
