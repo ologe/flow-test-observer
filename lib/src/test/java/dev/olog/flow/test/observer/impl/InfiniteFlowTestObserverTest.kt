@@ -1,6 +1,6 @@
 package dev.olog.flow.test.observer.impl
 
-import dev.olog.flow.test.observer.interactors.InfiniteFlowUseCase
+import dev.olog.flow.test.observer.impl.interactors.InfiniteFlowUseCase
 import dev.olog.flow.test.observer.test
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
@@ -11,7 +11,8 @@ import org.junit.Test
 
 class InfiniteFlowTestObserverTest {
 
-    private val sut = InfiniteFlowUseCase()
+    private val sut =
+        InfiniteFlowUseCase()
 
     // region getters
 

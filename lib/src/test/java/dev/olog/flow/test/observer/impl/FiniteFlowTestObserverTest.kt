@@ -1,6 +1,6 @@
 package dev.olog.flow.test.observer.impl
 
-import dev.olog.flow.test.observer.interactors.FiniteFlowUseCase
+import dev.olog.flow.test.observer.impl.interactors.FiniteFlowUseCase
 import dev.olog.flow.test.observer.test
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runBlockingTest
@@ -9,7 +9,8 @@ import org.junit.Test
 
 internal class FiniteFlowTestObserverTest {
 
-    private val sut = FiniteFlowUseCase()
+    private val sut =
+        FiniteFlowUseCase()
 
     // region getters
 
