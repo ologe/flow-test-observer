@@ -1,5 +1,8 @@
 package dev.olog.flow.test.observer
 
+/**
+ * Computes eagerly flow values to allow testing, works with both cold and hot streams
+ */
 interface FlowTestObserver<T> {
 
     suspend fun isFinite(): Boolean
@@ -7,6 +10,18 @@ interface FlowTestObserver<T> {
     suspend fun values(): List<T>
 
     suspend fun valuesCount(): Int
+
+    /**
+     * Assert that the [FlowTestObserver] this is a cold stream
+     * @return this
+     */
+    suspend fun assertIsFinite(): FlowTestObserver<T>
+
+    /**
+     * Assert that the [FlowTestObserver] this is a hot stream
+     * @return this
+     */
+    suspend fun assertIsNotFinite(): FlowTestObserver<T>
 
     /**
      * Assert that the [FlowTestObserver] received only the specified values in the specified order.

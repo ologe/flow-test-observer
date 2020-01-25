@@ -3,47 +3,26 @@ package dev.olog.flow.test.observer.impl
 import dev.olog.flow.test.observer.FlowTestObserver
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
-import org.junit.Assert
-import org.junit.Assert.assertEquals
-import java.util.*
+import org.junit.Assert.fail
 
 internal class FiniteFlowObserver<T>(
-    private val flow: Flow<T>
-) : FlowTestObserver<T> {
+    flow: Flow<T>
+) : BaseFlowObserver<T>(flow) {
 
-    private var _values: List<T>? = null
-
-    private suspend fun flowValues(): List<T> {
-        if (_values == null) {
-            _values = flow.toList()
-        }
-        return _values!!
+    override suspend fun computeFlowValues(flow: Flow<T>): List<T> {
+        return flow.toList()
     }
 
     override suspend fun isFinite(): Boolean {
-        throw NotImplementedError()
+        return true
     }
 
-    override suspend fun values(): List<T> {
-        return Collections.unmodifiableList(flowValues())
-    }
-
-    override suspend fun valuesCount(): Int {
-        return flowValues().size
-    }
-
-    override suspend fun assertValues(vararg values: T): FlowTestObserver<T> {
-        assertEquals(values.toList(), flowValues())
+    override suspend fun assertIsFinite(): FlowTestObserver<T> {
         return this
     }
 
-    override suspend fun assertNoValues(): FlowTestObserver<T> {
-        assertEquals(emptyList<T>(), flowValues())
-        return this
-    }
-
-    override suspend fun assertValueCount(count: Int): FlowTestObserver<T> {
-        assertEquals(count, flowValues().size)
+    override suspend fun assertIsNotFinite(): FlowTestObserver<T> {
+        fail("Cold streams is always finite")
         return this
     }
 
@@ -52,7 +31,8 @@ internal class FiniteFlowObserver<T>(
     }
 
     override suspend fun assertNotTerminated(): FlowTestObserver<T> {
-        Assert.fail("finite stream always terminate")
+        fail("Cold streams always terminate")
         return this
     }
+
 }

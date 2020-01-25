@@ -5,25 +5,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeout
-import org.junit.Assert
-import org.junit.Assert.assertEquals
-import java.util.*
+import org.junit.Assert.fail
 
 internal class InfiniteFlowObserver<T>(
-    private val flow: Flow<T>,
+    flow: Flow<T>,
     private val timeout: Long
-) : FlowTestObserver<T> {
+) : BaseFlowObserver<T>(flow) {
 
-    private var _values: List<T>? = null
-
-    private suspend fun flowValues(): List<T> {
-        if (_values == null) {
-            _values = computeFlowValues()
-        }
-        return _values!!
-    }
-
-    private suspend fun computeFlowValues(): List<T> {
+    override suspend fun computeFlowValues(flow: Flow<T>): List<T> {
         val result = mutableListOf<T>()
         try {
             var index = 0
@@ -40,38 +29,25 @@ internal class InfiniteFlowObserver<T>(
     }
 
     override suspend fun isFinite(): Boolean {
-        throw NotImplementedError()
+        return false
     }
 
-    override suspend fun values(): List<T> {
-        return Collections.unmodifiableList(flowValues())
-    }
-
-    override suspend fun valuesCount(): Int {
-        return flowValues().size
-    }
-
-    override suspend fun assertValues(vararg values: T): FlowTestObserver<T> {
-        assertEquals(values.toList(), flowValues())
+    override suspend fun assertIsFinite(): FlowTestObserver<T> {
+        fail("Hot streams is always infinite")
         return this
     }
 
-    override suspend fun assertNoValues(): FlowTestObserver<T> {
-        assertEquals(emptyList<T>(), flowValues())
-        return this
-    }
-
-    override suspend fun assertValueCount(count: Int): FlowTestObserver<T> {
-        assertEquals(count, flowValues().size)
+    override suspend fun assertIsNotFinite(): FlowTestObserver<T> {
         return this
     }
 
     override suspend fun assertTerminated(): FlowTestObserver<T> {
-        Assert.fail("infinite stream cannot terminate")
+        fail("Hot stream cannot terminate")
         return this
     }
 
     override suspend fun assertNotTerminated(): FlowTestObserver<T> {
         return this
     }
+
 }

@@ -6,10 +6,26 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withTimeout
 
+/**
+ * Allows hot and cold [Flow] streams testing.
+ * [hot vs cold](https://medium.com/@luukgruijs/understanding-hot-vs-cold-observables-62d04cf92e03)
+ *
+ * Usage example (using a cold flow here for simplicity):
+ * ```
+ * val flow = callbackFlow {
+ *      offer(1)
+ *      offer(2)
+ *      awaitClose()
+ *  }
+ *
+ * flow.test()
+ *      .assertValues(1, 2, 3)
+ *      .assertValueCount(3)
+ * ```
+ */
 fun <T> Flow<T>.test(timeout: Long = 10): FlowTestObserver<T> {
     return FlowTestObserverImpl(this, timeout)
 }
-
 
 internal class FlowTestObserverImpl<T>(
     private val flow: Flow<T>,
@@ -19,25 +35,14 @@ internal class FlowTestObserverImpl<T>(
     private var _isFinite: Boolean? = null
     private var _delegate: FlowTestObserver<T>? = null
 
-    override suspend fun isFinite(): Boolean {
+    private suspend fun checkIsFinite(): Boolean {
         if (_isFinite == null) {
-            _isFinite = assertIsFinite()
+            _isFinite = checkIsFiniteImpl()
         }
         return _isFinite!!
     }
 
-    private suspend fun delegate(): FlowTestObserver<T> {
-        if (_delegate == null) {
-            _delegate = if (isFinite()) {
-                FiniteFlowObserver(flow)
-            } else {
-                InfiniteFlowObserver(flow, timeout)
-            }
-        }
-        return _delegate!!
-    }
-
-    private suspend fun assertIsFinite(): Boolean {
+    private suspend fun checkIsFiniteImpl(): Boolean {
         var isFinite = false
         try {
             withTimeout(timeout) {
@@ -50,12 +55,41 @@ internal class FlowTestObserverImpl<T>(
         return isFinite
     }
 
+    private suspend fun delegate(): FlowTestObserver<T> {
+        if (_delegate == null) {
+            _delegate = if (checkIsFinite()) {
+                FiniteFlowObserver(flow)
+            } else {
+                InfiniteFlowObserver(flow, timeout)
+            }
+        }
+        return _delegate!!
+    }
+
+    // region getters
+
+    override suspend fun isFinite(): Boolean {
+        return delegate().isFinite()
+    }
+
     override suspend fun values(): List<T> {
         return delegate().values()
     }
 
     override suspend fun valuesCount(): Int {
         return delegate().valuesCount()
+    }
+
+    // endregion
+
+    // region assertions
+
+    override suspend fun assertIsFinite(): FlowTestObserver<T> {
+        return delegate().assertIsFinite()
+    }
+
+    override suspend fun assertIsNotFinite(): FlowTestObserver<T> {
+        return delegate().assertIsNotFinite()
     }
 
     override suspend fun assertValues(vararg values: T): FlowTestObserver<T> {
@@ -82,4 +116,7 @@ internal class FlowTestObserverImpl<T>(
         delegate().assertNotTerminated()
         return this
     }
+
+    // endregion
+
 }
