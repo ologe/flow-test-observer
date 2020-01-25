@@ -1,4 +1,4 @@
-package dev.olog.myapplication
+package dev.olog.flow.test.observer.sample
 
 import org.junit.Test
 

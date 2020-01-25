@@ -5,7 +5,7 @@
     android:background="@android:color/holo_red_light"
     android:id="@+id/content">
 
-    <dev.olog.myapplication.VV
+    <dev.olog.flow.VV
         android:id="@+id/vv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

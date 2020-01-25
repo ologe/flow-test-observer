@@ -1,4 +1,4 @@
-package dev.olog.myapplication
+package dev.olog.flow.test.observer.sample
 
 import dev.olog.flow.test.observer.test
 import org.junit.Rule
@@ -7,7 +7,8 @@ import org.junit.Test
 internal class FlowUseCaseTest {
 
     @get:Rule
-    val coroutineRule = CoroutineRule()
+    val coroutineRule =
+        CoroutineRule()
 
     @Test
     fun testFinite() = coroutineRule.runBlocking {

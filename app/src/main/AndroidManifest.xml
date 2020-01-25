@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="dev.olog.myapplication">
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    package="dev.olog.flow.test.observer.sample">
 
     <application
         android:allowBackup="true"
@@ -12,10 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning"
-        >
+        tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".MainActivity">
+        <activity android:name="dev.olog.flow.test.observer.sample.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
