@@ -9,8 +9,7 @@ import org.junit.Test
 
 internal class FiniteFlowTestObserverTest {
 
-    private val sut =
-        FiniteFlowUseCase()
+    private val sut = FiniteFlowUseCase()
 
     // region getters
 

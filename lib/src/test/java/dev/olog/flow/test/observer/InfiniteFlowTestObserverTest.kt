@@ -11,8 +11,7 @@ import org.junit.Test
 
 class InfiniteFlowTestObserverTest {
 
-    private val sut =
-        InfiniteFlowUseCase()
+    private val sut = InfiniteFlowUseCase()
 
     // region getters
 
