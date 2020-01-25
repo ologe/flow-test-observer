@@ -2,6 +2,7 @@ package dev.olog.flow.test.observer
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
@@ -32,19 +33,22 @@ internal class FlowTestObserverImpl<T>(
     private val flow: Flow<T>
 ) : FlowTestObserver<T> {
 
+    private var _hasCompleted: Boolean? = null
     private var _isFinite: Boolean? = null
     private var _flowValues: List<T>? = null
 
     private suspend fun setup() {
-        if (_isFinite == null || _flowValues == null) {
+        if (_isFinite == null || _flowValues == null || _hasCompleted == null) {
             val values = mutableListOf<T>()
             try {
                 withTimeout(Long.MAX_VALUE) {
-                    flow.collect { values.add(it) }
+                    flow.onCompletion { _hasCompleted = true }
+                        .collect { values.add(it) }
                 }
                 _isFinite = true
             } catch (ex: IllegalStateException) {
                 _isFinite = false
+                _hasCompleted = false
             }
             _flowValues = values
         }
@@ -60,11 +64,20 @@ internal class FlowTestObserverImpl<T>(
         return _flowValues!!
     }
 
+    private suspend fun hasCompletedInternal(): Boolean {
+        setup()
+        return _hasCompleted!!
+    }
+
 
     // region getters
 
     override suspend fun isFinite(): Boolean {
         return isFiniteInternal()
+    }
+
+    override suspend fun isTerminated(): Boolean {
+        return hasCompletedInternal()
     }
 
     override suspend fun values(): List<T> {
@@ -109,15 +122,15 @@ internal class FlowTestObserverImpl<T>(
     }
 
     override suspend fun assertTerminated(): FlowTestObserver<T> {
-        if (!isFinite()) {
-            fail("Hot stream cannot terminate")
+        if (!isTerminated()){
+            fail("Stream never complete")
         }
         return this
     }
 
     override suspend fun assertNotTerminated(): FlowTestObserver<T> {
-        if (isFinite()) {
-            fail("Cold streams always terminate")
+        if (isTerminated()){
+            fail("Stream has completed")
         }
         return this
     }
