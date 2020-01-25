@@ -1,17 +1,13 @@
 package dev.olog.flow.test.observer.sample
 
 import dev.olog.flow.test.observer.test
-import org.junit.Rule
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
 internal class FlowUseCaseTest {
 
-    @get:Rule
-    val coroutineRule =
-        CoroutineRule()
-
     @Test
-    fun testFinite() = coroutineRule.runBlocking {
+    fun testFinite() = runBlockingTest {
         FlowUseCase().invoke().test()
             .assertValues(1, 2, 3)
             .assertValueCount(3)
@@ -19,7 +15,7 @@ internal class FlowUseCaseTest {
     }
 
     @Test
-    fun testInfinite() = coroutineRule.runBlocking {
+    fun testInfinite() = runBlockingTest {
         InfiniteFlowUseCase().invoke().test()
             .assertValues(1, 2, 3)
             .assertValueCount(3)
