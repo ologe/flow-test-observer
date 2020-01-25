@@ -1,10 +1,11 @@
 package dev.olog.flow.test.observer
 
-import dev.olog.flow.test.observer.impl.FiniteFlowTestObserver
-import dev.olog.flow.test.observer.impl.InfiniteFlowTestObserver
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withTimeout
+import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
+import java.util.Collections.unmodifiableList
 
 /**
  * Allows hot and cold [Flow] streams testing.
@@ -32,51 +33,46 @@ internal class FlowTestObserverImpl<T>(
 ) : FlowTestObserver<T> {
 
     private var _isFinite: Boolean? = null
-    private var _delegate: FlowTestObserver<T>? = null
+    private var _flowValues: List<T>? = null
 
-    private suspend fun checkIsFinite(): Boolean {
-        if (_isFinite == null) {
-            _isFinite = checkIsFiniteImpl()
+    private suspend fun setup() {
+        if (_isFinite == null || _flowValues == null) {
+            val values = mutableListOf<T>()
+            try {
+                withTimeout(Long.MAX_VALUE) {
+                    flow.collect { values.add(it) }
+                }
+                _isFinite = true
+            } catch (ex: IllegalStateException) {
+                _isFinite = false
+            }
+            _flowValues = values
         }
+    }
+
+    private suspend fun isFiniteInternal(): Boolean {
+        setup()
         return _isFinite!!
     }
 
-    private suspend fun checkIsFiniteImpl(): Boolean {
-        var isFinite = false
-        try {
-            withTimeout(Long.MAX_VALUE) { // workaround to skip all delays
-                flow.toList()
-                isFinite = true
-            }
-        } catch (ignored: IllegalStateException) {
-
-        }
-        return isFinite
+    private suspend fun flowValues(): List<T> {
+        setup()
+        return _flowValues!!
     }
 
-    private suspend fun delegate(): FlowTestObserver<T> {
-        if (_delegate == null) {
-            _delegate = if (checkIsFinite()) {
-                FiniteFlowTestObserver(flow)
-            } else {
-                InfiniteFlowTestObserver(flow)
-            }
-        }
-        return _delegate!!
-    }
 
     // region getters
 
     override suspend fun isFinite(): Boolean {
-        return delegate().isFinite()
+        return isFiniteInternal()
     }
 
     override suspend fun values(): List<T> {
-        return delegate().values()
+        return unmodifiableList(flowValues())
     }
 
     override suspend fun valuesCount(): Int {
-        return delegate().valuesCount()
+        return flowValues().size
     }
 
     // endregion
@@ -84,35 +80,45 @@ internal class FlowTestObserverImpl<T>(
     // region assertions
 
     override suspend fun assertIsFinite(): FlowTestObserver<T> {
-        return delegate().assertIsFinite()
+        if (!isFinite()) {
+            fail("Hot streams is always infinite")
+        }
+        return this
     }
 
     override suspend fun assertIsNotFinite(): FlowTestObserver<T> {
-        return delegate().assertIsNotFinite()
+        if (isFinite()) {
+            fail("Cold streams is always finite")
+        }
+        return this
     }
 
     override suspend fun assertValues(vararg values: T): FlowTestObserver<T> {
-        delegate().assertValues(*values)
+        assertEquals(values.toList(), flowValues())
         return this
     }
 
     override suspend fun assertNoValues(): FlowTestObserver<T> {
-        delegate().assertNoValues()
+        assertEquals(emptyList<T>(), flowValues())
         return this
     }
 
     override suspend fun assertValueCount(count: Int): FlowTestObserver<T> {
-        delegate().assertValueCount(count)
+        assertEquals(count, flowValues().size)
         return this
     }
 
     override suspend fun assertTerminated(): FlowTestObserver<T> {
-        delegate().assertTerminated()
+        if (!isFinite()) {
+            fail("Hot stream cannot terminate")
+        }
         return this
     }
 
     override suspend fun assertNotTerminated(): FlowTestObserver<T> {
-        delegate().assertNotTerminated()
+        if (isFinite()) {
+            fail("Cold streams always terminate")
+        }
         return this
     }
 
