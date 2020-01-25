@@ -16,7 +16,7 @@ interface FlowTestObserver<T> {
     /**
      * @return true if the given flow is completed or cancelled.
      */
-    suspend fun isTerminated(): Boolean
+    suspend fun isCompleted(): Boolean
 
     /**
      * @return all the values emitted from the given flow.
@@ -68,13 +68,13 @@ interface FlowTestObserver<T> {
      * Assert that the given is completed or cancelled
      * @return this
      */
-    suspend fun assertTerminated(): FlowTestObserver<T>
+    suspend fun assertComplete(): FlowTestObserver<T>
 
     /**
      * Assert that the given is not completed or cancelled
      * @return this
      */
-    suspend fun assertNotTerminated(): FlowTestObserver<T>
+    suspend fun assertNotComplete(): FlowTestObserver<T>
 
     // endregion
 

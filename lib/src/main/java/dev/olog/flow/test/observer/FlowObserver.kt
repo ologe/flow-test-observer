@@ -76,7 +76,7 @@ internal class FlowTestObserverImpl<T>(
         return isFiniteInternal()
     }
 
-    override suspend fun isTerminated(): Boolean {
+    override suspend fun isCompleted(): Boolean {
         return hasCompletedInternal()
     }
 
@@ -121,15 +121,15 @@ internal class FlowTestObserverImpl<T>(
         return this
     }
 
-    override suspend fun assertTerminated(): FlowTestObserver<T> {
-        if (!isTerminated()){
+    override suspend fun assertComplete(): FlowTestObserver<T> {
+        if (!isCompleted()){
             fail("Stream never complete")
         }
         return this
     }
 
-    override suspend fun assertNotTerminated(): FlowTestObserver<T> {
-        if (isTerminated()){
+    override suspend fun assertNotComplete(): FlowTestObserver<T> {
+        if (isCompleted()){
             fail("Stream has completed")
         }
         return this

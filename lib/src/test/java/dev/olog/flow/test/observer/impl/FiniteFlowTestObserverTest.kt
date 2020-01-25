@@ -78,13 +78,13 @@ internal class FiniteFlowTestObserverTest {
     @Test
     fun `test assertTerminated`() = runBlockingTest {
         sut().test()
-            .assertTerminated()
+            .assertComplete()
     }
 
     @Test(expected = AssertionError::class)
     fun `test assertNotTerminated`() = runBlockingTest {
         sut().test()
-            .assertNotTerminated()
+            .assertNotComplete()
     }
 
     @Test

@@ -81,13 +81,13 @@ class InfiniteFlowTestObserverTest {
     @Test(expected = AssertionError::class)
     fun `test assertTerminated`() = runBlockingTest {
         sut().test()
-            .assertTerminated()
+            .assertComplete()
     }
 
     @Test
     fun `test assertNotTerminated`() = runBlockingTest {
         sut().test()
-            .assertNotTerminated()
+            .assertNotComplete()
     }
 
     @Test(expected = AssertionError::class)
