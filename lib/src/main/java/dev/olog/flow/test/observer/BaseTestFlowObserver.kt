@@ -24,7 +24,7 @@ internal abstract class BaseTestFlowObserver<T>(
         if (isNotInitialized()) {
             val values = mutableListOf<T>()
             try {
-                withTimeout(Long.MAX_VALUE) {
+                withTimeout(Long.MAX_VALUE) { // needed in order to work with delay()
                     flow.onCompletion { _hasCompleted = true }
                         .catch { _error = Error.Wrapped(it) }
                         .collect { values.add(it) }
