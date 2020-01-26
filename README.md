@@ -20,28 +20,10 @@ allprojects {
 Step 2. Add the dependency
 
 ```groovy
-testImplementation "com.github.ologe:flow-test-observer:1.0.0"
+testImplementation "com.github.ologe:flow-test-observer:1.0.0-rc02"
 ```
 
 ### Usage
-
-Given a flow:
-
-```kotlin
-class FlowUseCase {
-
-    operator fun invoke(): Flow<Int> {
-        return channelFlow<Int> {
-            offer(1)
-            offer(2)
-            offer(3)
-        }   
-    }
-
-}
-```
-
-Then somewhere in you test directory:
 
 ```kotlin
 class FlowUseCaseTest {
@@ -49,7 +31,9 @@ class FlowUseCaseTest {
     private val sut = FlowUseCase()
     
     @Test
-    fun `use case test`() = runBlockingTest {
+    fun `finite flow test`() = runBlockingTest {
+        val flow = flowOf(1, 2, 3)   
+          
         sut().test()
             .assertValues(1, 2, 3)
             .assertValueCount(3)
@@ -69,6 +53,7 @@ class FlowUseCaseTest {
         flow.test()
             .assertValues(1, 2)
             .assertValueCount(2)
+            .assertNotComplete()
     }
     
 }
