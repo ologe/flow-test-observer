@@ -1,2 +1,2 @@
 include ':app', ':lib'
-rootProject.name='My Application'
+rootProject.name='flow-test-observer'
