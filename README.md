@@ -78,3 +78,7 @@ class FlowUseCaseTest {
 
 
 You can see all available assertions [here](FlowTestObserver)
+
+## Caveats
+
+Not working with `RendezvousChannel`
