@@ -36,6 +36,9 @@ internal class FlowTestObserverImpl<T>(
     }
 
     override suspend fun valueAt(index: Int): T {
+        if (index >= valuesCount()) {
+            throw IllegalArgumentException("Index out of bound=$index, size=${valuesCount()}")
+        }
         return flowValues()[index]
     }
 
@@ -70,11 +73,6 @@ internal class FlowTestObserverImpl<T>(
 
     override suspend fun assertNoErrors(): FlowTestObserver<T> {
         assertTrue(errorInternal() is Error.Empty)
-        return this
-    }
-
-    override suspend fun assertError(error: Throwable): FlowTestObserver<T> {
-        assertError { it == error }
         return this
     }
 

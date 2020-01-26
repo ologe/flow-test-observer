@@ -55,18 +55,6 @@ interface FlowTestObserver<T> {
     suspend fun assertNoErrors(): FlowTestObserver<T>
 
     /**
-     * Assert that the given flow received exactly the specified error event value.
-     *
-     * The comparison is performed via equals(); since most exceptions don't
-     * implement equals(), this assertion may fail. Use the [assertError(Class)]
-     * overload to test against the class of an error instead of an instance of an error
-     * or [assertError(Predicate)] to test with different condition.
-     *
-     * @return this
-     */
-    suspend fun assertError(error: Throwable): FlowTestObserver<T>
-
-    /**
      * Asserts that the given flow received exactly one error which is an
      * instance of the specified errorClass class.
      * @return this
