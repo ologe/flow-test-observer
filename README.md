@@ -26,38 +26,31 @@ testImplementation "com.github.ologe:flow-test-observer:1.0.0-rc02"
 ### Usage
 
 ```kotlin
-class FlowUseCaseTest {
-    
-    private val sut = FlowUseCase()
-    
-    @Test
-    fun `finite flow test`() = runBlockingTest {
-        val flow = flowOf(1, 2, 3)   
-          
-        sut().test()
-            .assertValues(1, 2, 3)
-            .assertValueCount(3)
-            .assertComplete()
-    }
-    
-    // works as well with infinite flows 👍
-    @Test
-    fun `test infinite flow`() = runBlockingTest {
-        val flow = channelFlow<Int> {
-            offer(1)
-            offer(2)
-            
-            awaitClose()
-        }
-        
-        flow.test()
-            .assertValues(1, 2)
-            .assertValueCount(2)
-            .assertNotComplete()
-    }
-    
+@Test
+fun `finite flow test`() = runBlockingTest {
+    val flow = flowOf(1, 2, 3)   
+      
+    sut().test()
+        .assertValues(1, 2, 3)
+        .assertValueCount(3)
+        .assertComplete()
 }
 
+// works as well with infinite flows 👍
+@Test
+fun `infinite flow test`() = runBlockingTest {
+    val flow = channelFlow<Int> {
+        offer(1)
+        offer(2)
+        
+        awaitClose()
+    }
+    
+    flow.test()
+        .assertValues(1, 2)
+        .assertValueCount(2)
+        .assertNotComplete()
+}
 ```
 
 
