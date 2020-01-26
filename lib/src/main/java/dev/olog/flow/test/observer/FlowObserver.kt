@@ -1,11 +1,7 @@
 package dev.olog.flow.test.observer
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.withTimeout
-import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
+import org.junit.Assert.*
 import java.util.Collections.unmodifiableList
 
 /**
@@ -30,54 +26,17 @@ fun <T> Flow<T>.test(): FlowTestObserver<T> {
 }
 
 internal class FlowTestObserverImpl<T>(
-    private val flow: Flow<T>
-) : FlowTestObserver<T> {
-
-    private var _hasCompleted: Boolean? = null
-    private var _isFinite: Boolean? = null
-    private var _flowValues: List<T>? = null
-
-    private suspend fun setup() {
-        if (_isFinite == null || _flowValues == null || _hasCompleted == null) {
-            val values = mutableListOf<T>()
-            try {
-                withTimeout(Long.MAX_VALUE) {
-                    flow.onCompletion { _hasCompleted = true }
-                        .collect { values.add(it) }
-                }
-                _isFinite = true
-            } catch (ex: IllegalStateException) {
-                _isFinite = false
-                _hasCompleted = false
-            }
-            _flowValues = values
-        }
-    }
-
-    private suspend fun isFiniteInternal(): Boolean {
-        setup()
-        return _isFinite!!
-    }
-
-    private suspend fun flowValues(): List<T> {
-        setup()
-        return _flowValues!!
-    }
-
-    private suspend fun hasCompletedInternal(): Boolean {
-        setup()
-        return _hasCompleted!!
-    }
-
+    flow: Flow<T>
+) : BaseTestFlowObserver<T>(flow) {
 
     // region getters
 
-    override suspend fun isFinite(): Boolean {
-        return isFiniteInternal()
-    }
-
     override suspend fun isCompleted(): Boolean {
         return hasCompletedInternal()
+    }
+
+    override suspend fun valueAt(index: Int): T {
+        return flowValues()[index]
     }
 
     override suspend fun values(): List<T> {
@@ -88,21 +47,93 @@ internal class FlowTestObserverImpl<T>(
         return flowValues().size
     }
 
+    override suspend fun error(): Throwable? {
+        return when (val error = errorInternal()) {
+            is Error.Wrapped -> error.throwable
+            is Error.Empty -> null
+        }
+    }
+
     // endregion
 
     // region assertions
 
-    override suspend fun assertIsFinite(): FlowTestObserver<T> {
-        if (!isFinite()) {
-            fail("Hot streams is always infinite")
+    override suspend fun assertComplete(): FlowTestObserver<T> {
+        assertTrue("Not completed!", isCompleted())
+        return this
+    }
+
+    override suspend fun assertNotComplete(): FlowTestObserver<T> {
+        assertFalse("Completed!", isCompleted())
+        return this
+    }
+
+    override suspend fun assertNoErrors(): FlowTestObserver<T> {
+        assertTrue(errorInternal() is Error.Empty)
+        return this
+    }
+
+    override suspend fun assertError(error: Throwable): FlowTestObserver<T> {
+        assertError { it == error }
+        return this
+    }
+
+    override suspend fun assertError(errorClass: Class<out Throwable?>): FlowTestObserver<T> {
+        assertError { it::class.java == errorClass }
+        return this
+    }
+
+    override suspend fun assertError(errorPredicate: (Throwable) -> Boolean): FlowTestObserver<T> {
+        val error = errorInternal()
+        assertTrue("No errors found", error is Error.Wrapped)
+        require(error is Error.Wrapped)
+        assertTrue("Predicate doesn't match", errorPredicate(error.throwable))
+        return this
+    }
+
+    override suspend fun assertErrorMessage(message: String): FlowTestObserver<T> {
+        val error = errorInternal()
+        require(error is Error.Wrapped)
+        assertEquals(message, error.throwable.message)
+        return this
+    }
+
+    override suspend fun assertValue(value: T): FlowTestObserver<T> {
+        if (flowValues().size != 1) {
+            fail("Expected only 1 value")
+        }
+        val first = valueAt(0)
+        assertEquals(value, first)
+        if (first != value) {
+            fail("Expected $value, but was $first")
         }
         return this
     }
 
-    override suspend fun assertIsNotFinite(): FlowTestObserver<T> {
-        if (isFinite()) {
-            fail("Cold streams is always finite")
+    override suspend fun assertValue(predicate: (T) -> Boolean): FlowTestObserver<T> {
+        if (flowValues().size != 1) {
+            fail("Expected only 1 value")
         }
+
+        val first = valueAt(0)
+        assertTrue("Predicate doesn't match", predicate(first))
+        return this
+    }
+
+    override suspend fun assertValueAt(index: Int, value: T): FlowTestObserver<T> {
+        if (index > flowValues().lastIndex) {
+            fail("Invalid index=$index")
+        }
+
+        assertEquals(value, valueAt(index))
+        return this
+    }
+
+    override suspend fun assertValueAt(index: Int, predicate: (T) -> Boolean): FlowTestObserver<T> {
+        if (index > flowValues().lastIndex) {
+            fail("Invalid index=$index")
+        }
+        assertTrue("Predicate doesn't match", predicate(flowValues()[index]))
         return this
     }
 
@@ -121,19 +152,6 @@ internal class FlowTestObserverImpl<T>(
         return this
     }
 
-    override suspend fun assertComplete(): FlowTestObserver<T> {
-        if (!isCompleted()){
-            fail("Stream never complete")
-        }
-        return this
-    }
-
-    override suspend fun assertNotComplete(): FlowTestObserver<T> {
-        if (isCompleted()){
-            fail("Stream has completed")
-        }
-        return this
-    }
 
     // endregion
 
