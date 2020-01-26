@@ -39,6 +39,10 @@ internal abstract class BaseTestFlowObserver<T>(
             }
             _flowValues = values
         }
+
+        require(_hasCompleted != null)
+        require(_flowValues != null)
+        require(_error != null)
     }
 
     protected suspend fun flowValues(): List<T> {
