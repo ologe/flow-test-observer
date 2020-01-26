@@ -2,7 +2,6 @@ package dev.olog.flow.test.observer
 
 /**
  * Computes eagerly flow values to allow testing, works with both cold and hot/infinite streams.
- * All delays will be ignored.
  */
 interface FlowTestObserver<T> {
 

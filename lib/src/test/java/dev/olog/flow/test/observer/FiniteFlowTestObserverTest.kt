@@ -14,16 +14,6 @@ internal class FiniteFlowTestObserverTest {
     // region getters
 
     @Test
-    fun `test isFinite`() = runBlockingTest {
-        assertTrue("should be finite", sut().test().isFinite())
-    }
-
-    @Test
-    fun `test isCompleted`() = runBlockingTest {
-        assertTrue("should be completed", sut().test().isFinite())
-    }
-
-    @Test
     fun `test values`() = runBlockingTest {
         assertEquals(listOf(1, 2, 3), sut().test().values())
     }
@@ -89,16 +79,6 @@ internal class FiniteFlowTestObserverTest {
     fun `test assertNotTerminated`() = runBlockingTest {
         sut().test()
             .assertNotComplete()
-    }
-
-    @Test
-    fun `test assertIsFinite, success`() = runBlockingTest {
-        sut().test().assertIsFinite()
-    }
-
-    @Test(expected = AssertionError::class)
-    fun `test assertIsNotFinite, fail`() = runBlockingTest {
-        sut().test().assertIsNotFinite()
     }
 
     // endregion

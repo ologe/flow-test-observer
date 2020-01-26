@@ -17,16 +17,6 @@ class InfiniteFlowTestObserverTest {
     // region getters
 
     @Test
-    fun `test isFinite`() = runBlockingTest {
-        assertFalse("should be infinite", sut().test().isFinite())
-    }
-
-    @Test
-    fun `test isCompleted`() = runBlockingTest {
-        assertFalse("should not be completed", sut().test().isFinite())
-    }
-
-    @Test
     fun `test values`() = runBlockingTest {
         assertEquals(listOf(1, 2, 3), sut().test().values())
     }
@@ -93,16 +83,6 @@ class InfiniteFlowTestObserverTest {
     fun `test assertNotTerminated`() = runBlockingTest {
         sut().test()
             .assertNotComplete()
-    }
-
-    @Test(expected = AssertionError::class)
-    fun `test assertIsFinite, success`() = runBlockingTest {
-        sut().test().assertIsFinite()
-    }
-
-    @Test
-    fun `test assertIsNotFinite, fail`() = runBlockingTest {
-        sut().test().assertIsNotFinite()
     }
 
     // endregion
