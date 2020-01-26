@@ -7,7 +7,17 @@ to work with Kotlin `Flow` API. The library works with both *cold*/*finite* and
 ## Getting started
 
 ### Setting up the dependency
-The first step is to include RxJava 3 into your project, for example, as a Gradle compile dependency:
+Step 1. Add the JitPack repository to your build file
+Add it in your root build.gradle at the end of repositories:
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+Step 2. Add the dependency
 
 ```groovy
 testImplementation "com.github.ologe:flow-test-observer:1.0.0"
