@@ -77,4 +77,4 @@ class FlowUseCaseTest {
 
 
 
-You can see all available assertions [here](https://github.com/ologe/flow-test-observer/blob/master/lib/src/main/java/dev/olog/flow/test/observer/FlowObserver.kt)
+You can see all available assertions [here](FlowTestObserver)
