@@ -59,4 +59,4 @@ You can see all available assertions [here](https://github.com/ologe/flow-test-o
 
 ## Caveats
 
-Not working with `RendezvousChannel`
+Not working with `RendezvousChannel` and `BufferedChannel` with small buffers
