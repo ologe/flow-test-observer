@@ -1,6 +1,6 @@
 package dev.olog.flow.test.observer
 
-sealed class Error {
+internal sealed class Error {
 
     object Empty : Error()
 
