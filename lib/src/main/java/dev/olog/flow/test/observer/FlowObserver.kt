@@ -76,7 +76,7 @@ internal class FlowTestObserverImpl<T>(
         return this
     }
 
-    override suspend fun assertError(errorClass: Class<out Throwable?>): FlowTestObserver<T> {
+    override suspend fun assertError(errorClass: Class<out Throwable>): FlowTestObserver<T> {
         assertError { it::class.java == errorClass }
         return this
     }
