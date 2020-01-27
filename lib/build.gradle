@@ -12,9 +12,10 @@ android {
         // sdk-major-minor-alpha/beta/release-fix
         // alpha 0
         // beta 1
-        // release 2
-        versionCode 29_1_0_2_02
-        versionName "1.0.0-rc02"
+        // rc 2
+        // release 3
+        versionCode 29_1_0_3_00
+        versionName "1.0.0"
 
     }
 
