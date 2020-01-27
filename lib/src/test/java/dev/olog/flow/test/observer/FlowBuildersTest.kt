@@ -23,7 +23,7 @@ internal class FlowBuildersTest {
 
         flow.test()
             .assertNoValues()
-            .assertNotComplete()
+            .assertComplete()
     }
 
     @Test
