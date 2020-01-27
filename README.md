@@ -1,6 +1,7 @@
 # Kotlin Flow test observer
 [![Build Status](https://travis-ci.org/ologe/flow-test-observer.svg?branch=master)](https://travis-ci.org/ologe/flow-test-observer)
 [![codecov](https://codecov.io/gh/TechnionYP5777/flow-test-observer/branch/master/graph/badge.svg)](https://codecov.io/gh/TechnionYP5777/flow-test-observer)
+[![](https://jitpack.io/v/ologe/flow-test-observer.svg)](https://jitpack.io/#flow-test-observer)
 
 Library inspired by `TestSubscriber` from [RxJava 2](https://github.com/ReactiveX/RxJava). 
 Works with both *cold*/*finite* and *hot*/*infinite* flow.
