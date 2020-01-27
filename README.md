@@ -1,8 +1,7 @@
 # Kotlin Flow test observer
 
-Adaptation of `TestSubscriber` interface from [RxJava 2](https://github.com/ReactiveX/RxJava) 
-to work with Kotlin `Flow` API. The library works with both *cold*/*finite* and 
-*hot*/*infinite* flow.
+Library inspired by `TestSubscriber` from [RxJava 2](https://github.com/ReactiveX/RxJava). 
+Works with both *cold*/*finite* and *hot*/*infinite* flow.
 
 ## Getting started
 
@@ -20,7 +19,7 @@ allprojects {
 Step 2. Add the dependency
 
 ```groovy
-testImplementation "com.github.ologe:flow-test-observer:1.0.0-rc02"
+testImplementation "com.github.ologe:flow-test-observer:1.0.0"
 ```
 
 ### Usage
