@@ -15,8 +15,8 @@ android {
         // beta 1
         // rc 2
         // release 3
-        versionCode 29_1_0_3_00
-        versionName "1.0.0"
+        versionCode 29_1_0_3_01
+        versionName "1.0.1"
 
     }
 
