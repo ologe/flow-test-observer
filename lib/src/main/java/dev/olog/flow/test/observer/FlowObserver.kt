@@ -115,6 +115,15 @@ internal class FlowTestObserverImpl<T>(
         return this
     }
 
+    override suspend fun assertValueIsNull(): FlowTestObserver<T> {
+        if (flowValues().size != 1) {
+            fail("Expected only 1 value")
+        }
+        val first = valueAt(0)
+        assertTrue("The item is not null=$first", first == null)
+        return this
+    }
+
     override suspend fun assertValueAt(index: Int, value: T): FlowTestObserver<T> {
         if (index > flowValues().lastIndex) {
             fail("Invalid index=$index")

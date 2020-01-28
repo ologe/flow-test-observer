@@ -1,6 +1,7 @@
 package dev.olog.flow.test.observer
 
 import dev.olog.flow.test.observer.interactors.*
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.*
 import org.junit.Test
@@ -302,6 +303,42 @@ internal class FlowTestObserverImplTest {
 
         sut().test()
             .assertValueCount(2)
+    }
+
+    @Test(expected = AssertionError::class)
+    fun `test assertValueIsNull, should fail for empty flow`() = runBlockingTest {
+        val flow = EmptyFlowUseCase()
+
+        flow().test()
+            .assertValueIsNull()
+    }
+
+    @Test(expected = AssertionError::class)
+    fun `test assertValueIsNull, should fail for multiple value flow`() = runBlockingTest {
+        val flow = FlowUseCase()
+
+        flow().test()
+            .assertValueIsNull()
+    }
+
+    @Test
+    fun `test assertValueIsNull`() = runBlockingTest {
+        val flow = flow<Int?> {
+            emit(null)
+        }
+
+        flow.test()
+            .assertValueIsNull()
+    }
+
+    @Test(expected = AssertionError::class)
+    fun `test assertValueIsNull, but is not`() = runBlockingTest {
+        val flow = flow<Int?> {
+            emit(1)
+        }
+
+        flow.test()
+            .assertValueIsNull()
     }
 
     // endregion

@@ -82,6 +82,13 @@ interface FlowTestObserver<T> {
     suspend fun assertValue(predicate: (T) -> Boolean): FlowTestObserver<T>
 
     /**
+     * Assert that the given flow received exactly one value and this equals to null
+     * @since 1.1.0
+     * @return this
+     */
+    suspend fun assertValueIsNull(): FlowTestObserver<T>
+
+    /**
      * Asserts that the given flow received exactly one value at the given index
      * which is equal to the given value.
      * @return this
