@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.flow
 
 internal class ErrorFlowUseCase {
 
-    operator fun invoke(): Flow<Int> {
+    operator fun invoke(message: String = ""): Flow<Int> {
         return flow {
-            throw IllegalStateException()
+            throw IllegalStateException(message)
         }
     }
 

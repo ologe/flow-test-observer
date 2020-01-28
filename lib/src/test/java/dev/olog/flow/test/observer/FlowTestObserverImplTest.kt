@@ -5,7 +5,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.*
 import org.junit.Test
 
-internal class FiniteFlowTestObserverTest {
+internal class FlowTestObserverImplTest {
 
     // region getters
 
@@ -153,6 +153,24 @@ internal class FiniteFlowTestObserverTest {
     }
 
     @Test
+    fun `test assertErrorMessage`() = runBlockingTest {
+        val errorMessage = "error"
+        val sut = ErrorFlowUseCase()
+
+        sut(errorMessage).test()
+            .assertErrorMessage(errorMessage)
+    }
+
+    @Test(expected = AssertionError::class)
+    fun `test assertErrorMessage, fail`() = runBlockingTest {
+        val errorMessage = "error"
+        val sut = ErrorFlowUseCase()
+
+        sut("any").test()
+            .assertErrorMessage(errorMessage)
+    }
+
+    @Test
     fun `test assertValue on single value flow`() = runBlockingTest {
         val sut = SingleValueFlowUseCase()
 
@@ -199,6 +217,8 @@ internal class FiniteFlowTestObserverTest {
         sut().test()
             .assertValue { it == 1 }
     }
+
+
 
     @Test
     fun `test assertValueAt`() = runBlockingTest {
