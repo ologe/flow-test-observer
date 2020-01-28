@@ -1,0 +1,5 @@
+ignore:
+  - "lib/build/"
+
+coverage:
+  range: 90..100
