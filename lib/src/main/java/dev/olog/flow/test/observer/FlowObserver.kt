@@ -102,9 +102,6 @@ internal class FlowTestObserverImpl<T>(
         }
         val first = valueAt(0)
         assertEquals(value, first)
-        if (first != value) {
-            fail("Expected $value, but was $first")
-        }
         return this
     }
 
