@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.withTimeout
 
-internal abstract class BaseTestFlowObserver<T>(
+internal abstract class BaseTestFlowCollector<T>(
     private val flow: Flow<T>
-) : FlowTestObserver<T> {
+) : FlowTestCollector<T> {
 
     private var _hasCompleted: Boolean? = null
     private var _flowValues: List<T>? = null

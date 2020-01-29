@@ -6,7 +6,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.*
 import org.junit.Test
 
-internal class FlowTestObserverImplTest {
+internal class FlowTestCollectorImplTest {
 
     // region getters
 

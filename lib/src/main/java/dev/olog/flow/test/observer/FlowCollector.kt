@@ -21,13 +21,13 @@ import java.util.Collections.unmodifiableList
  *      .assertValueCount(3)
  * ```
  */
-fun <T> Flow<T>.test(): FlowTestObserver<T> {
-    return FlowTestObserverImpl(this)
+fun <T> Flow<T>.test(): FlowTestCollector<T> {
+    return FlowTestCollectorImpl(this)
 }
 
-internal class FlowTestObserverImpl<T>(
+internal class FlowTestCollectorImpl<T>(
     flow: Flow<T>
-) : BaseTestFlowObserver<T>(flow) {
+) : BaseTestFlowCollector<T>(flow) {
 
     // region getters
 
@@ -61,27 +61,27 @@ internal class FlowTestObserverImpl<T>(
 
     // region assertions
 
-    override suspend fun assertComplete(): FlowTestObserver<T> {
+    override suspend fun assertComplete(): FlowTestCollector<T> {
         assertTrue("Not completed!", isCompleted())
         return this
     }
 
-    override suspend fun assertNotComplete(): FlowTestObserver<T> {
+    override suspend fun assertNotComplete(): FlowTestCollector<T> {
         assertFalse("Completed!", isCompleted())
         return this
     }
 
-    override suspend fun assertNoErrors(): FlowTestObserver<T> {
+    override suspend fun assertNoErrors(): FlowTestCollector<T> {
         assertTrue(errorInternal() is Error.Empty)
         return this
     }
 
-    override suspend fun assertError(errorClass: Class<out Throwable>): FlowTestObserver<T> {
+    override suspend fun assertError(errorClass: Class<out Throwable>): FlowTestCollector<T> {
         assertError { it::class.java == errorClass }
         return this
     }
 
-    override suspend fun assertError(errorPredicate: (Throwable) -> Boolean): FlowTestObserver<T> {
+    override suspend fun assertError(errorPredicate: (Throwable) -> Boolean): FlowTestCollector<T> {
         val error = errorInternal()
         assertTrue("No errors found", error is Error.Wrapped)
         require(error is Error.Wrapped)
@@ -89,14 +89,14 @@ internal class FlowTestObserverImpl<T>(
         return this
     }
 
-    override suspend fun assertErrorMessage(message: String): FlowTestObserver<T> {
+    override suspend fun assertErrorMessage(message: String): FlowTestCollector<T> {
         val error = errorInternal()
         require(error is Error.Wrapped)
         assertEquals(message, error.throwable.message)
         return this
     }
 
-    override suspend fun assertValue(value: T): FlowTestObserver<T> {
+    override suspend fun assertValue(value: T): FlowTestCollector<T> {
         if (flowValues().size != 1) {
             fail("Expected only 1 value")
         }
@@ -105,7 +105,7 @@ internal class FlowTestObserverImpl<T>(
         return this
     }
 
-    override suspend fun assertValue(predicate: (T) -> Boolean): FlowTestObserver<T> {
+    override suspend fun assertValue(predicate: (T) -> Boolean): FlowTestCollector<T> {
         if (flowValues().size != 1) {
             fail("Expected only 1 value")
         }
@@ -115,7 +115,7 @@ internal class FlowTestObserverImpl<T>(
         return this
     }
 
-    override suspend fun assertValueIsNull(): FlowTestObserver<T> {
+    override suspend fun assertValueIsNull(): FlowTestCollector<T> {
         if (flowValues().size != 1) {
             fail("Expected only 1 value")
         }
@@ -124,7 +124,7 @@ internal class FlowTestObserverImpl<T>(
         return this
     }
 
-    override suspend fun assertValueAt(index: Int, value: T): FlowTestObserver<T> {
+    override suspend fun assertValueAt(index: Int, value: T): FlowTestCollector<T> {
         if (index > flowValues().lastIndex) {
             fail("Invalid index=$index")
         }
@@ -133,7 +133,7 @@ internal class FlowTestObserverImpl<T>(
         return this
     }
 
-    override suspend fun assertValueAt(index: Int, predicate: (T) -> Boolean): FlowTestObserver<T> {
+    override suspend fun assertValueAt(index: Int, predicate: (T) -> Boolean): FlowTestCollector<T> {
         if (index > flowValues().lastIndex) {
             fail("Invalid index=$index")
         }
@@ -141,17 +141,17 @@ internal class FlowTestObserverImpl<T>(
         return this
     }
 
-    override suspend fun assertValues(vararg values: T): FlowTestObserver<T> {
+    override suspend fun assertValues(vararg values: T): FlowTestCollector<T> {
         assertEquals(values.toList(), flowValues())
         return this
     }
 
-    override suspend fun assertNoValues(): FlowTestObserver<T> {
+    override suspend fun assertNoValues(): FlowTestCollector<T> {
         assertEquals(emptyList<T>(), flowValues())
         return this
     }
 
-    override suspend fun assertValueCount(count: Int): FlowTestObserver<T> {
+    override suspend fun assertValueCount(count: Int): FlowTestCollector<T> {
         assertEquals(count, flowValues().size)
         return this
     }
