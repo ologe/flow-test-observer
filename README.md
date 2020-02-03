@@ -57,7 +57,7 @@ fun `infinite flow test`() = runBlockingTest {
 
 
 
-You can see all available assertions [here](https://github.com/ologe/flow-test-observer/blob/master/lib/src/main/java/dev/olog/flow/test/observer/FlowTestObserver.kt)
+You can see all available assertions [here](https://github.com/ologe/flow-test-observer/blob/master/lib/src/main/java/dev/olog/flow/test/observer/FlowTestCollector.kt)
 
 ## Caveats
 
