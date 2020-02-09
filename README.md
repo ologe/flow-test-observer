@@ -32,7 +32,7 @@ testImplementation "com.github.ologe:flow-test-observer:1.x.y"
 fun `finite flow test`() = runBlockingTest {
     val flow = flowOf(1, 2, 3)   
       
-    sut().test()
+    flow.test()
         .assertValues(1, 2, 3)
         .assertValueCount(3)
         .assertComplete()
