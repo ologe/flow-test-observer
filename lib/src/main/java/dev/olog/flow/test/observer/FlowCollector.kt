@@ -72,7 +72,9 @@ internal class FlowTestCollectorImpl<T>(
     }
 
     override suspend fun assertNoErrors(): FlowTestCollector<T> {
-        assertTrue(errorInternal() is Error.Empty)
+        when (val error = errorInternal()) {
+            is Error.Wrapped -> fail("Error present=${error.throwable}")
+        }
         return this
     }
 
@@ -85,7 +87,7 @@ internal class FlowTestCollectorImpl<T>(
         val error = errorInternal()
         assertTrue("No errors found", error is Error.Wrapped)
         require(error is Error.Wrapped)
-        assertTrue("Predicate doesn't match", errorPredicate(error.throwable))
+        assertTrue("Predicate doesn't match, actual=${error.throwable}", errorPredicate(error.throwable))
         return this
     }
 
@@ -98,7 +100,7 @@ internal class FlowTestCollectorImpl<T>(
 
     override suspend fun assertValue(value: T): FlowTestCollector<T> {
         if (flowValues().size != 1) {
-            fail("Expected only 1 value")
+            fail("Expected only 1 value, values=${flowValues()}")
         }
         val first = valueAt(0)
         assertEquals(value, first)
@@ -107,7 +109,7 @@ internal class FlowTestCollectorImpl<T>(
 
     override suspend fun assertValue(predicate: (T) -> Boolean): FlowTestCollector<T> {
         if (flowValues().size != 1) {
-            fail("Expected only 1 value")
+            fail("Expected only 1 value, values=${flowValues()}")
         }
 
         val first = valueAt(0)
@@ -117,7 +119,7 @@ internal class FlowTestCollectorImpl<T>(
 
     override suspend fun assertValueIsNull(): FlowTestCollector<T> {
         if (flowValues().size != 1) {
-            fail("Expected only 1 value")
+            fail("Expected only 1 value, values=${flowValues()}")
         }
         val first = valueAt(0)
         assertTrue("The item is not null=$first", first == null)
