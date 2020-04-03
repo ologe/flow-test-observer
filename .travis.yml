@@ -7,3 +7,6 @@ after_success:
 
 script:
   - ./gradlew clean assemble test
+
+dist:
+  trusty
