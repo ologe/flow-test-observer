@@ -6,7 +6,7 @@ import java.util.Collections.unmodifiableList
 
 /**
  * Allows hot and cold [Flow] streams testing.
- * [hot vs cold](https://medium.com/@luukgruijs/understanding-hot-vs-cold-observables-62d04cf92e03)
+ * [Hot vs Cold steams](https://medium.com/@luukgruijs/understanding-hot-vs-cold-observables-62d04cf92e03)
  *
  * Usage example (using a cold flow here for simplicity):
  * ```
