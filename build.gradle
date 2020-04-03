@@ -6,7 +6,7 @@ plugins {
 
 group 'com.github.ologe'
 project.ext.artifactId = 'flow-test-observer'
-version '1.3.0-rc02'
+version '1.3.0-rc03'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 
