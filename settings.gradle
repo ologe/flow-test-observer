@@ -1,2 +1,1 @@
-include ':app', ':lib'
-rootProject.name='flow-test-observer'
+rootProject.name = 'flow-test-observer'

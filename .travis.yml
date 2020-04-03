@@ -1,19 +1,8 @@
-language: android
-jdk: oraclejdk8
-sudo: false
-
-android:
-  components:
-    - tools
-    - platform-tools
-    - tools
-    - build-tools-29.0.3
-    - android-29
-
+language: java
 
 # code coverage
 after_success:
   - bash <(curl -s --retry 10 https://codecov.io/bash)
 
 script:
-  - ./gradlew lib:assembleDebug lib:testDebugUnitTest lib:jacocoTestReport
+  - ./gradlew clean assemble test
