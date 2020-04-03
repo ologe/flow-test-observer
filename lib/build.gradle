@@ -1,5 +1,27 @@
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'jacoco-android'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion '29.0.3'
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 29
+
+        // sdk-major-minor-alpha/beta/release-fix
+        // alpha 0
+        // beta 1
+        // rc 2
+        // release 3
+        versionCode 29_1_3_0_02
+        versionName "1.3.0-alpha02"
+
+    }
+
+}
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -12,5 +34,22 @@ dependencies {
     testImplementation 'junit:junit:4.13'
 }
 
-sourceCompatibility= 1.7
-targetCompatibility= 1.7
+// Because the components are created only during the afterEvaluate phase, you must
+// configure your publications using the afterEvaluate() lifecycle method.
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'com.github.ologe'
+                artifactId = 'flow.test.observer'
+                version "1.3.0-alpha02"
+                version = '1.0'
+            }
+        }
+    }
+}
