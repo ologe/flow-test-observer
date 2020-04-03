@@ -1,4 +1,5 @@
 language: java
+jdk: oraclejdk8
 
 # code coverage
 after_success:
