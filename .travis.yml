@@ -16,4 +16,4 @@ after_success:
   - bash <(curl -s --retry 10 https://codecov.io/bash)
 
 script:
-  - ./gradlew lib:assembleDebug lib:testDebugUnitTest
+  - ./gradlew lib:assembleDebug lib:testDebugUnitTest lib:jacocoTestReport
