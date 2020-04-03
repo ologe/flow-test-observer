@@ -6,7 +6,7 @@ plugins {
 
 group 'com.github.ologe'
 project.ext.artifactId = 'flow-test-observer'
-version '1.3.0-rc03'
+version '1.3.0'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -36,8 +36,7 @@ compileTestKotlin {
 }
 
 task sourceJar(type: Jar){
-    from sourceSets.main.allJava
-//    from sourceSets.main.kotlin
+    from sourceSets.main.kotlin
 }
 
 publishing {
