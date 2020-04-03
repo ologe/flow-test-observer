@@ -3,14 +3,21 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "dev.olog.flow.test.observer.sample"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+
+        // sdk-major-minor-alpha/beta/release-fix
+        // alpha 0
+        // beta 1
+        // rc 2
+        // release 3
+        versionCode 29_1_3_0_00
+        versionName "1.3.0-alpha01"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
