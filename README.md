@@ -32,10 +32,11 @@ testImplementation "com.github.ologe:flow-test-observer:1.x.y"
 fun `finite flow test`() = runBlockingTest {
     val flow = flowOf(1, 2, 3)   
       
-    flow.test()
-        .assertValues(1, 2, 3)
-        .assertValueCount(3)
-        .assertComplete()
+    flow.test(this) {
+        assertValues(1, 2, 3)
+        assertValueCount(3)
+        assertComplete()
+    }   
 }
 
 // works as well with infinite flows 👍
@@ -48,10 +49,11 @@ fun `infinite flow test`() = runBlockingTest {
         awaitClose()
     }
     
-    flow.test()
-        .assertValues(1, 2)
-        .assertValueCount(2)
-        .assertNotComplete()
+    flow.test(this) {
+        assertValues(1, 2)
+        assertValueCount(2)
+        assertNotComplete()
+    }
 }
 ```
 

@@ -6,7 +6,7 @@ plugins {
 
 group 'com.github.ologe'
 project.ext.artifactId = 'flow-test-observer'
-version '1.3.0'
+version '1.4.0'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -28,11 +28,13 @@ dependencies {
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
     kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"]
+    kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=kotlinx.coroutines.FlowPreview"]
 }
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
     kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"]
+    kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=kotlinx.coroutines.FlowPreview"]
 }
 
 task sourceJar(type: Jar){
