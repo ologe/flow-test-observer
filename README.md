@@ -57,9 +57,12 @@ fun `infinite flow test`() = runBlockingTest {
 }
 ```
 
+All available assertions can be found [here](https://github.com/ologe/flow-test-observer/blob/master/src/main/kotlin/dev/olog/flow/test/observer/FlowTestCollector.kt)
 
-
-You can see all available assertions [here](https://github.com/ologe/flow-test-observer/blob/master/src/main/kotlin/dev/olog/flow/test/observer/FlowTestCollector.kt)
+Here are some simple examples on how to test different channel:
+- [Channels](https://github.com/ologe/flow-test-observer/blob/master/src/test/kotlin/dev/olog/flow/test/observer/ChannelBuildersTest.kt) 
+- [Broadcast channels](https://github.com/ologe/flow-test-observer/blob/master/src/test/kotlin/dev/olog/flow/test/observer/BroadcastChannelBuildersTest.kt)
+- [Flow builders](https://github.com/ologe/flow-test-observer/blob/master/src/test/kotlin/dev/olog/flow/test/observer/FlowBuildersTest.kt) 
 
 ## Bugs and Feedback
 For bugs, questions and discussions please use the [Github Issues](https://github.com/ologe/flow-test-observer/issues).
