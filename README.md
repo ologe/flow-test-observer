@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/ologe/flow-test-observer.svg?branch=master)](https://travis-ci.org/ologe/flow-test-observer)
 [![](https://jitpack.io/v/ologe/flow-test-observer.svg)](https://jitpack.io/#flow-test-observer)
 
-Library inspired by `TestSubscriber` from [RxJava 2](https://github.com/ReactiveX/RxJava). 
+Library inspired by `TestSubscriber` from [RxJava](https://github.com/ReactiveX/RxJava). 
 Works with both *cold*/*finite* and *hot*/*infinite* flow.
 
 ## Getting started
@@ -57,11 +57,7 @@ fun `infinite flow test`() = runBlockingTest {
 
 
 
-You can see all available assertions [here](https://github.com/ologe/flow-test-observer/blob/master/lib/src/main/java/dev/olog/flow/test/observer/FlowTestCollector.kt)
-
-## Caveats
-
-Not working with `RendezvousChannel` and `BufferedChannel` with small buffers
+You can see all available assertions [here](https://github.com/ologe/flow-test-observer/blob/master/src/main/kotlin/dev/olog/flow/test/observer/FlowTestCollector.kt)
 
 ## Bugs and Feedback
 For bugs, questions and discussions please use the [Github Issues](https://github.com/ologe/flow-test-observer/issues).
