@@ -9,7 +9,7 @@ Works with both *cold*/*finite* and *hot*/*infinite* flow.
 
 ### Setting up the dependency
 Step 1. Add the JitPack repository to your build file
-Add it in your root build.gradle at the end of repositories:
+Add it in your root `build.gradle` at the end of repositories:
 ```groovy
 allprojects {
     repositories {
