@@ -4,6 +4,8 @@
 
 Library inspired by `TestSubscriber` from [RxJava](https://github.com/ReactiveX/RxJava). 
 Works with both *cold*/*finite* and *hot*/*infinite* flow.
+Find in this [Medium post](https://medium.com/@eugeniu.olog/unit-testing-asynchronous-kotlin-flow-code-acddb38bf7ec)
+some more information about the motivation of the library.
 
 ## Getting started
 
