@@ -2,9 +2,9 @@ package dev.olog.flow.test.observer
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlin.coroutines.coroutineContext
 
 /**
  * Allows hot and cold [Flow] streams testing.
@@ -55,8 +55,8 @@ fun <T> Flow<T>.test(): FlowTestCollector<T> {
 suspend fun <T> Flow<T>.test(
     scope: CoroutineScope,
     block: suspend FlowTestCollector<T>.() -> Unit
-): Job = coroutineScope {
-    scope.launch {
+): Job {
+    return scope.launch(coroutineContext) {
         FlowTestCollectorImpl(this@test).block()
     }
 }

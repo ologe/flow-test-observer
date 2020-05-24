@@ -1,12 +1,12 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.71'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
 }
 
 group 'com.github.ologe'
 project.ext.artifactId = 'flow-test-observer'
-version '1.4.0'
+version '1.4.1'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -17,7 +17,7 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
-    def coroutines = '1.3.5'
+    def coroutines = '1.3.7'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
     implementation "junit:junit:4.13"
