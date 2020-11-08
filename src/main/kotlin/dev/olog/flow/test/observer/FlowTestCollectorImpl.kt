@@ -3,6 +3,7 @@ package dev.olog.flow.test.observer
 import kotlinx.coroutines.flow.Flow
 import org.junit.Assert
 import java.util.*
+import kotlin.reflect.KClass
 
 internal class FlowTestCollectorImpl<T>(
     flow: Flow<T>
@@ -15,10 +16,11 @@ internal class FlowTestCollectorImpl<T>(
     }
 
     override suspend fun valueAt(index: Int): T {
-        if (index >= valuesCount()) {
-            throw IllegalArgumentException("Index out of bound=$index, size=${valuesCount()}")
+        val actualValues = flowValues()
+        if (index !in 0..actualValues.lastIndex) {
+            Assert.fail("IndexOutOfBoundsException: cannot access index [$index], list has [${actualValues.size}] items")
         }
-        return flowValues()[index]
+        return actualValues[index]
     }
 
     override suspend fun values(): List<T> {
@@ -41,39 +43,45 @@ internal class FlowTestCollectorImpl<T>(
     // region assertions
 
     override suspend fun assertComplete(): FlowTestCollector<T> {
-        Assert.assertTrue("Not completed!", isCompleted())
+        Assert.assertTrue("Expected [Complete], but was [Not Complete]", isCompleted())
         return this
     }
 
     override suspend fun assertNotComplete(): FlowTestCollector<T> {
-        Assert.assertFalse("Completed!", isCompleted())
+        Assert.assertFalse("Expected [Not Complete], but was [Complete]", isCompleted())
         return this
     }
 
     override suspend fun assertNoErrors(): FlowTestCollector<T> {
         when (val error = errorInternal()) {
             is Error.Wrapped -> Assert.fail(
-                "Error present=${error.throwable}"
+                "Expected [No Errors], but failed with [${error.throwable}]"
             )
         }
         return this
     }
 
-    override suspend fun assertError(errorClass: Class<out Throwable>): FlowTestCollector<T> {
-        assertError { it::class.java == errorClass }
+    override suspend fun assertError(javaClass: Class<out Throwable>): FlowTestCollector<T> {
+        assertError { it::class.java == javaClass }
         return this
     }
 
-    override suspend fun assertError(errorPredicate: (Throwable) -> Boolean): FlowTestCollector<T> {
+    override suspend fun assertError(kotlinClass: KClass<out Throwable>): FlowTestCollector<T> {
+        assertError { it::class.java == kotlinClass.java }
+        return this
+    }
+
+    override suspend fun assertError(predicate: (Throwable) -> Boolean): FlowTestCollector<T> {
         val error = errorInternal()
+
         Assert.assertTrue(
-            "No errors found",
+            "Expected [Exception], but no Exception was thrown",
             error is Error.Wrapped
         )
         require(error is Error.Wrapped)
         Assert.assertTrue(
-            "Predicate doesn't match, actual=${error.throwable}",
-            errorPredicate(error.throwable)
+            "Predicate doesn't match, error [${error.throwable}]",
+            predicate(error.throwable)
         )
         return this
     }
@@ -81,22 +89,28 @@ internal class FlowTestCollectorImpl<T>(
     override suspend fun assertErrorMessage(message: String): FlowTestCollector<T> {
         val error = errorInternal()
         require(error is Error.Wrapped)
+        Assert.assertTrue(
+            "Expected error message [${message}], but was [${error.throwable.message}]",
+            message == error.throwable.message
+        )
         Assert.assertEquals(message, error.throwable.message)
         return this
     }
 
     override suspend fun assertValue(value: T): FlowTestCollector<T> {
         if (flowValues().size != 1) {
-            Assert.fail("Expected only 1 value, values=${flowValues()}")
+            Assert.fail("Expected exactly 1 value [$value], but values were ${flowValues()}")
         }
         val first = valueAt(0)
-        Assert.assertEquals(value, first)
+        if (value != first) {
+            Assert.fail("Expected [$value], but was [$first]")
+        }
         return this
     }
 
     override suspend fun assertValue(predicate: (T) -> Boolean): FlowTestCollector<T> {
         if (flowValues().size != 1) {
-            Assert.fail("Expected only 1 value, values=${flowValues()}")
+            Assert.fail("Expected exactly 1 value, but values were ${flowValues()}")
         }
 
         val first = valueAt(0)
@@ -106,42 +120,51 @@ internal class FlowTestCollectorImpl<T>(
 
     override suspend fun assertValueIsNull(): FlowTestCollector<T> {
         if (flowValues().size != 1) {
-            Assert.fail("Expected only 1 value, values=${flowValues()}")
+            Assert.fail("Expected exactly 1 value [null], but values were ${flowValues()}")
         }
         val first = valueAt(0)
-        Assert.assertTrue("The item is not null=$first", first == null)
+        Assert.assertTrue("Expected [null], but was [$first]", first == null)
         return this
     }
 
     override suspend fun assertValueAt(index: Int, value: T): FlowTestCollector<T> {
-        if (index > flowValues().lastIndex) {
-            Assert.fail("Invalid index=$index")
+        val actualValue = valueAt(index)
+        if (value != actualValue) {
+            Assert.fail("Expected [$value], but was [$actualValue]")
         }
-
-        Assert.assertEquals(value, valueAt(index))
         return this
     }
 
     override suspend fun assertValueAt(index: Int, predicate: (T) -> Boolean): FlowTestCollector<T> {
-        if (index > flowValues().lastIndex) {
-            Assert.fail("Invalid index=$index")
+        val actualValue = valueAt(index)
+        if (!predicate(actualValue)) {
+            Assert.fail("Predicate doesn't match for [$actualValue]")
         }
-        Assert.assertTrue("Predicate doesn't match", predicate(flowValues()[index]))
         return this
     }
 
     override suspend fun assertValues(vararg values: T): FlowTestCollector<T> {
-        Assert.assertEquals(values.toList(), flowValues())
+        val expectedValues = values.toList()
+        val actualValues = flowValues()
+        if (expectedValues != actualValues) {
+            Assert.fail("Expected $expectedValues, but was $actualValues")
+        }
         return this
     }
 
     override suspend fun assertNoValues(): FlowTestCollector<T> {
-        Assert.assertEquals(emptyList<T>(), flowValues())
+        val actualValues = flowValues()
+        if (actualValues.isNotEmpty()) {
+            Assert.fail("Expected no values, but was $actualValues")
+        }
         return this
     }
 
     override suspend fun assertValueCount(count: Int): FlowTestCollector<T> {
-        Assert.assertEquals(count, flowValues().size)
+        val actualSize = flowValues().size
+        if (actualSize != count) {
+            Assert.fail("Expected [$count] items, but was [$actualSize]")
+        }
         return this
     }
 

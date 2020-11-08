@@ -37,8 +37,17 @@ internal class FlowTestCollectorImplTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun `test valueAt with wrong index, should fail`() = runBlockingTest {
+    @Test(expected = AssertionError::class)
+    fun `test valueAt with lower out of bound index, should fail`() = runBlockingTest {
+        val sut = FlowUseCase()
+
+        sut().test(this) {
+            valueAt(-1)
+        }
+    }
+
+    @Test(expected = AssertionError::class)
+    fun `test valueAt with upper out of bound index, should fail`() = runBlockingTest {
         val sut = FlowUseCase()
 
         sut().test(this) {
@@ -144,7 +153,7 @@ internal class FlowTestCollectorImplTest {
     }
 
     @Test(expected = AssertionError::class)
-    fun `test assertError throwable on error free flow, should throw`() = runBlockingTest {
+    fun `test assertError (java) throwable on error free flow, should throw`() = runBlockingTest {
         val sut = FlowUseCase()
 
         sut().test(this) {
@@ -153,11 +162,29 @@ internal class FlowTestCollectorImplTest {
     }
 
     @Test
-    fun `test assertError throwable on flow with errors`() = runBlockingTest {
+    fun `test assertError (java) throwable on flow with errors`() = runBlockingTest {
         val sut = ErrorFlowUseCase()
 
         sut().test(this) {
             assertError(IllegalStateException::class.java)
+        }
+    }
+
+    @Test(expected = AssertionError::class)
+    fun `test assertError (kotlin) throwable on error free flow, should throw`() = runBlockingTest {
+        val sut = FlowUseCase()
+
+        sut().test(this) {
+            assertError(Throwable::class)
+        }
+    }
+
+    @Test
+    fun `test assertError (kotlin) throwable on flow with errors`() = runBlockingTest {
+        val sut = ErrorFlowUseCase()
+
+        sut().test(this) {
+            assertError(IllegalStateException::class)
         }
     }
 

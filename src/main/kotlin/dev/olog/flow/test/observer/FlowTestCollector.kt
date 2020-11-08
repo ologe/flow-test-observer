@@ -1,5 +1,7 @@
 package dev.olog.flow.test.observer
 
+import kotlin.reflect.KClass
+
 /**
  * Computes eagerly flow values to allow testing, works with both cold/finite and hot/infinite streams.
  */
@@ -59,14 +61,22 @@ interface FlowTestCollector<T> {
      * instance of the specified errorClass class.
      * @return this
      */
-    suspend fun assertError(errorClass: Class<out Throwable>): FlowTestCollector<T>
+    suspend fun assertError(javaClass: Class<out Throwable>): FlowTestCollector<T>
+
+    // since 1.4.2
+    /**
+     * Asserts that the given flow received an error which is an
+     * instance of the specified errorClass class.
+     * @return this
+     */
+    suspend fun assertError(kotlinClass: KClass<out Throwable>): FlowTestCollector<T>
 
     /**
      * Asserts that the given flow received an error for which
      * the provided predicate returns true.
      * @return this
      */
-    suspend fun assertError(errorPredicate: (Throwable) -> Boolean): FlowTestCollector<T>
+    suspend fun assertError(predicate: (Throwable) -> Boolean): FlowTestCollector<T>
 
     /**
      * Assert that the given flow received exactly one value.
