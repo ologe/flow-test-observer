@@ -22,27 +22,31 @@ internal abstract class BaseTestFlowCollector<T>(
 
     private suspend fun setup() {
         if (isNotInitialized()) {
-            val values = mutableListOf<T>()
-            try {
-                withTimeout(Long.MAX_VALUE) { // needed in order to work with delay()
-                    flow.onCompletion { _hasCompleted = true }
-                        .catch { _error = Error.Wrapped(it) }
-                        .collect { values.add(it) }
-
-                    if (_error !is Error.Wrapped) {
-                        _error = Error.Empty
-                    }
-                }
-            } catch (ex: IllegalStateException) {
-                _hasCompleted = false
-                _error = Error.Empty
-            }
-            _flowValues = values
+            initialize()
         }
 
         require(_hasCompleted != null)
         require(_flowValues != null)
         require(_error != null)
+    }
+
+    private suspend fun initialize() {
+        val values = mutableListOf<T>()
+        try {
+            withTimeout(Long.MAX_VALUE) { // needed in order to work with delay()
+                flow.onCompletion { _hasCompleted = true }
+                    .catch { _error = Error.Wrapped(it) }
+                    .collect { values.add(it) }
+
+                if (_error !is Error.Wrapped) {
+                    _error = Error.Empty
+                }
+            }
+        } catch (ex: IllegalStateException) {
+            _hasCompleted = false
+            _error = Error.Empty
+        }
+        _flowValues = values
     }
 
     protected suspend fun flowValues(): List<T> {
