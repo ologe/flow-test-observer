@@ -1,6 +1,6 @@
 ## 1.5.0
 - Kotlin update to `1.4.10`
-- Coroutine update to `1.4.0`
+- Coroutines update to `1.4.1`
 - Bump gradle wrapper to `6.7`
 - Deleted deprecated `Flow<T>.test(): FlowTestCollector<T>`
 - Improved assertion messages
