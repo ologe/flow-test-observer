@@ -23,6 +23,7 @@ allprojects {
 Step 2. Add the dependency
 
 ```groovy
+testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$latest"
 testImplementation "com.github.ologe:flow-test-observer:1.x.y"
 ```
 (Please replace `x` and `y` with the latest version numbers: [![](https://jitpack.io/v/ologe/flow-test-observer.svg)](https://jitpack.io/#flow-test-observer)
