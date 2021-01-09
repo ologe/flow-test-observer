@@ -1,3 +1,7 @@
+## 1.5.1
+- Kotlin update to `1.4.21`
+- Coroutines update to `1.4.2`
+
 ## 1.5.0
 - Kotlin update to `1.4.10`
 - Coroutines update to `1.4.1`
