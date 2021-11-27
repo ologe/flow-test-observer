@@ -317,7 +317,7 @@ class FlowTestCollectorImplErrorMessagesTest {
     }
 
     @Test
-    fun `test assertValues message`() = runTest(UnconfinedTestDispatcher()) {
+    fun `test vararg assertValues message`() = runTest(UnconfinedTestDispatcher()) {
         val flow = flowOf(TestModel.item1)
 
         flow.test(this) {
@@ -325,6 +325,58 @@ class FlowTestCollectorImplErrorMessagesTest {
                 assertValues(TestModel.item2)
             } catch (ex: Throwable) {
                 ex.printAndAssert("\nexpected: TestModel(id=2, firstName=firstName2, lastName=lastName2) (class: TestModel)\ngot: TestModel(id=1, firstName=firstName1, lastName=lastName1) (class: TestModel); Value at position 0 differ (values = 1, has error = false, completed = true)")
+            }
+        }
+    }
+
+    @Test
+    fun `test iterable assertValues message, less values`() = runTest(UnconfinedTestDispatcher()) {
+        val flow = flowOf(TestModel.item1, TestModel.item2)
+
+        flow.test(this) {
+            try {
+                assertValues(listOf(TestModel.item1))
+            } catch (ex: Throwable) {
+                ex.printAndAssert("More values received than expected (1) (values = 2, has error = false, completed = true)")
+            }
+        }
+    }
+
+    @Test
+    fun `test iterable assertValues message, more values`() = runTest(UnconfinedTestDispatcher()) {
+        val flow = flowOf(TestModel.item1)
+
+        flow.test(this) {
+            try {
+                assertValues(listOf(TestModel.item1, TestModel.item2))
+            } catch (ex: Throwable) {
+                ex.printAndAssert("Fewer values received than expected (1) (values = 1, has error = false, completed = true)")
+            }
+        }
+    }
+
+    @Test
+    fun `test sequence assertValues message, less values`() = runTest(UnconfinedTestDispatcher()) {
+        val flow = flowOf(TestModel.item1, TestModel.item2)
+
+        flow.test(this) {
+            try {
+                assertValues(sequenceOf(TestModel.item1))
+            } catch (ex: Throwable) {
+                ex.printAndAssert("More values received than expected (1) (values = 2, has error = false, completed = true)")
+            }
+        }
+    }
+
+    @Test
+    fun `test sequence assertValues message, more values`() = runTest(UnconfinedTestDispatcher()) {
+        val flow = flowOf(TestModel.item1)
+
+        flow.test(this) {
+            try {
+                assertValues(sequenceOf(TestModel.item1, TestModel.item2))
+            } catch (ex: Throwable) {
+                ex.printAndAssert("Fewer values received than expected (1) (values = 1, has error = false, completed = true)")
             }
         }
     }

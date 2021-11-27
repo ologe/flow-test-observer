@@ -3,6 +3,9 @@
 - bump kotlin to 1.6.0
 - bump coroutines to 1.6.0-RC
 - improved assertion messages, aligned to RxJava3 BaseTestConsumer
+- added new assertions:
+  - `assertValues(Iterable<T>)`
+  - `assertValues(Sequence<T>)`
 
 ## 1.5.1
 - Kotlin update to `1.4.21`

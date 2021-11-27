@@ -326,7 +326,7 @@ internal class FlowTestCollectorImplTest {
     }
 
     @Test
-    fun `test assertValues`() = runTest(UnconfinedTestDispatcher()) {
+    fun `test vararg assertValues`() = runTest(UnconfinedTestDispatcher()) {
         val sut = FlowUseCase()
 
         sut().test(this) {
@@ -335,7 +335,7 @@ internal class FlowTestCollectorImplTest {
     }
 
     @Test(expected = AssertionError::class)
-    fun `test assertValues with less values, should fail`() = runTest(UnconfinedTestDispatcher()) {
+    fun `test vararg assertValues with less values, should fail`() = runTest(UnconfinedTestDispatcher()) {
         val sut = FlowUseCase()
 
         sut().test(this) {
@@ -344,11 +344,65 @@ internal class FlowTestCollectorImplTest {
     }
 
     @Test(expected = AssertionError::class)
-    fun `test assertValues with more values, should fail`() = runTest(UnconfinedTestDispatcher()) {
+    fun `test vararg assertValues with more values, should fail`() = runTest(UnconfinedTestDispatcher()) {
         val sut = FlowUseCase()
 
         sut().test(this) {
             assertValues(1, 2, 3, 4)
+        }
+    }
+
+    @Test
+    fun `test iterable assertValues`() = runTest(UnconfinedTestDispatcher()) {
+        val sut = FlowUseCase()
+
+        sut().test(this) {
+            assertValues(listOf(1, 2, 3))
+        }
+    }
+
+    @Test(expected = AssertionError::class)
+    fun `test iterable assertValues with less values, should fail`() = runTest(UnconfinedTestDispatcher()) {
+        val sut = FlowUseCase()
+
+        sut().test(this) {
+            assertValues(listOf(1, 2))
+        }
+    }
+
+    @Test(expected = AssertionError::class)
+    fun `test iterable assertValues with more values, should fail`() = runTest(UnconfinedTestDispatcher()) {
+        val sut = FlowUseCase()
+
+        sut().test(this) {
+            assertValues(listOf(1, 2, 3, 4))
+        }
+    }
+
+    @Test
+    fun `test sequence assertValues`() = runTest(UnconfinedTestDispatcher()) {
+        val sut = FlowUseCase()
+
+        sut().test(this) {
+            assertValues(sequenceOf(1, 2, 3))
+        }
+    }
+
+    @Test(expected = AssertionError::class)
+    fun `test sequence assertValues with less values, should fail`() = runTest(UnconfinedTestDispatcher()) {
+        val sut = FlowUseCase()
+
+        sut().test(this) {
+            assertValues(sequenceOf(1, 2))
+        }
+    }
+
+    @Test(expected = AssertionError::class)
+    fun `test sequence assertValues with more values, should fail`() = runTest(UnconfinedTestDispatcher()) {
+        val sut = FlowUseCase()
+
+        sut().test(this) {
+            assertValues(sequenceOf(1, 2, 3, 4))
         }
     }
 

@@ -119,6 +119,18 @@ interface FlowTestCollector<T> {
     suspend fun assertValues(vararg values: T): FlowTestCollector<T>
 
     /**
+     * Assert that the given flow received only the specified values in the specified order.
+     * @return this
+     */
+    suspend fun assertValues(values: Iterable<T>): FlowTestCollector<T>
+
+    /**
+     * Assert that the given flow received only the specified values in the specified order.
+     * @return this
+     */
+    suspend fun assertValues(values: Sequence<T>): FlowTestCollector<T>
+
+    /**
      * Assert that the given flow received the specified number of values.
      * @return this
      */

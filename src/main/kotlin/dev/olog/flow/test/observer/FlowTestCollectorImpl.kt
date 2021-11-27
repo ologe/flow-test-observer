@@ -172,6 +172,51 @@ internal class FlowTestCollectorImpl<T>(
         return this
     }
 
+    override suspend fun assertValues(values: Iterable<T>): FlowTestCollector<T> {
+        return assertValues(
+            actualIterator = values().iterator(),
+            expectedIterator = values.iterator()
+        )
+    }
+
+    override suspend fun assertValues(values: Sequence<T>): FlowTestCollector<T> {
+        return assertValues(
+            actualIterator = values().iterator(),
+            expectedIterator = values.iterator()
+        )
+    }
+
+    private suspend fun assertValues(actualIterator: Iterator<T>, expectedIterator: Iterator<T>): FlowTestCollector<T> {
+        var i = 0
+
+        var hasExpectedNext: Boolean
+        var hasActualNext: Boolean
+
+        while (true) {
+            hasActualNext = actualIterator.hasNext()
+            hasExpectedNext = expectedIterator.hasNext()
+
+            if (!hasActualNext || !hasExpectedNext) {
+                break
+            }
+            val actual = actualIterator.next()
+            val expected = expectedIterator.next()
+            if (actual != expected) {
+                throw fail("\nexpected: ${valueAndClass(expected)}\ngot: ${valueAndClass(actual)}; Value at position $i differ")
+            }
+            i++
+        }
+
+        if (hasActualNext) {
+            throw fail("More values received than expected ($i)")
+        }
+        if (hasExpectedNext) {
+            throw fail("Fewer values received than expected ($i)")
+        }
+
+        return this
+    }
+
     override suspend fun assertNoValues(): FlowTestCollector<T> {
         return assertValueCount(0)
     }
