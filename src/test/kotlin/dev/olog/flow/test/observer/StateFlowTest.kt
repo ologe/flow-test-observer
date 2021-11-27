@@ -2,13 +2,14 @@ package dev.olog.flow.test.observer
 
 import dev.olog.flow.test.observer.utils.stateFlowBuilder
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class StateFlowTest {
 
     @Test
-    fun testSingleValue() = runBlockingTest {
+    fun testSingleValue() = runTest(UnconfinedTestDispatcher()) {
         val flow = stateFlowBuilder(1) {}
 
         flow.test(this) {
@@ -18,7 +19,7 @@ class StateFlowTest {
     }
 
     @Test
-    fun testMultipleValuesFastEmissionShouldEmitOnlyLast() = runBlockingTest {
+    fun testMultipleValuesFastEmissionShouldEmitOnlyLast() = runTest(UnconfinedTestDispatcher()) {
         val flow = stateFlowBuilder(1) {
             value = 2
             value = 3
@@ -31,7 +32,7 @@ class StateFlowTest {
     }
 
     @Test
-    fun testMultipleValuesShouldKeepAllValues() = runBlockingTest {
+    fun testMultipleValuesShouldKeepAllValues() = runTest(UnconfinedTestDispatcher()) {
         val flow = stateFlowBuilder(1) {
             delay(100)
             value = 2

@@ -2,9 +2,12 @@ package dev.olog.flow.test.observer
 
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import org.junit.Test
 
@@ -14,7 +17,7 @@ import org.junit.Test
 internal class FlowBuildersTest {
 
     @Test
-    fun testEmptyFlow() = runBlockingTest {
+    fun testEmptyFlow() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = emptyFlow()
 
         flow.test(this) {
@@ -24,7 +27,7 @@ internal class FlowBuildersTest {
     }
 
     @Test
-    fun testFlowOf() = runBlockingTest {
+    fun testFlowOf() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = flowOf(1, 2)
 
         flow.test(this) {
@@ -34,7 +37,7 @@ internal class FlowBuildersTest {
     }
 
     @Test
-    fun testFlow() = runBlockingTest {
+    fun testFlow() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = flow {
             delay(10_000)
             yield()
@@ -50,7 +53,7 @@ internal class FlowBuildersTest {
     }
 
     @Test
-    fun testNestedFlow() = runBlockingTest {
+    fun testNestedFlow() = runTest(UnconfinedTestDispatcher()) {
         val nestedFlow: Flow<Int> = flow {
             emit(2)
             emit(3)
@@ -71,14 +74,14 @@ internal class FlowBuildersTest {
     }
 
     @Test
-    fun testChannelFlow() = runBlockingTest {
+    fun testChannelFlow() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = channelFlow {
             delay(10_000)
             yield()
 
-            offer(1)
+            trySend(1)
             send(2)
-            sendBlocking(3)
+            trySendBlocking(3)
         }
 
         flow.test(this) {
@@ -88,14 +91,14 @@ internal class FlowBuildersTest {
     }
 
     @Test
-    fun testInfiniteChannelFlow() = runBlockingTest {
+    fun testInfiniteChannelFlow() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = channelFlow {
             delay(10_000)
             yield()
 
-            offer(1)
+            trySend(1)
             send(2)
-            sendBlocking(3)
+            trySendBlocking(3)
 
             awaitClose()
         }
@@ -107,14 +110,14 @@ internal class FlowBuildersTest {
     }
 
     @Test
-    fun testCallbackFlow() = runBlockingTest {
+    fun testCallbackFlow() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = callbackFlow {
             delay(10_000)
             yield()
 
-            offer(1)
+            trySend(1)
             send(2)
-            sendBlocking(3)
+            trySendBlocking(3)
         }
 
         flow.test(this) {
@@ -124,14 +127,14 @@ internal class FlowBuildersTest {
     }
 
     @Test
-    fun testInfiniteCallbackFlow() = runBlockingTest {
+    fun testInfiniteCallbackFlow() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = callbackFlow {
             delay(10_000)
             yield()
 
-            offer(1)
+            trySend(1)
             send(2)
-            sendBlocking(3)
+            trySendBlocking(3)
 
             awaitClose()
         }

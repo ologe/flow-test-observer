@@ -1,3 +1,9 @@
+## 1.6.0
+- bump gradle wrapper to 7.3
+- bump kotlin to 1.6.0
+- bump coroutines to 1.6.0-RC
+- improved assertion messages, aligned to RxJava3 BaseTestConsumer
+
 ## 1.5.1
 - Kotlin update to `1.4.21`
 - Coroutines update to `1.4.2`

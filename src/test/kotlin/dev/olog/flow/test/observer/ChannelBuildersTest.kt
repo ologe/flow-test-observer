@@ -2,11 +2,12 @@ package dev.olog.flow.test.observer
 
 import dev.olog.flow.test.observer.utils.channelBuilder
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import org.junit.Test
 import java.util.concurrent.TimeUnit
@@ -19,15 +20,15 @@ internal class ChannelBuildersTest {
         delay(delay)
         yield()
 
-        offer(1)
+        trySend(1)
         send(2)
-        sendBlocking(3)
+        trySendBlocking(3)
         send(4)
-        offer(5)
+        trySend(5)
     }
 
     @Test
-    fun testRendezvousChannel() = runBlockingTest {
+    fun testRendezvousChannel() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = channelBuilder<Int>(Channel.RENDEZVOUS) {
 
             emitTestData()
@@ -42,7 +43,7 @@ internal class ChannelBuildersTest {
     }
 
     @Test
-    fun testInfiniteRendezvousChannel() = runBlockingTest {
+    fun testInfiniteRendezvousChannel() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = channelBuilder<Int>(Channel.RENDEZVOUS) {
 
             emitTestData()
@@ -57,7 +58,7 @@ internal class ChannelBuildersTest {
 
     // default buffer is 64 (kotlin 1.3.61)
     @Test
-    fun `test BufferedChannel with default buffer`() = runBlockingTest {
+    fun `test BufferedChannel with default buffer`() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = channelBuilder<Int>(Channel.BUFFERED) {
 
             emitTestData()
@@ -72,7 +73,7 @@ internal class ChannelBuildersTest {
 
     // default buffer is 64 (kotlin 1.3.61)
     @Test
-    fun `test infinite BufferedChannel with default buffer`() = runBlockingTest {
+    fun `test infinite BufferedChannel with default buffer`() = runTest(UnconfinedTestDispatcher()) {
         val flow = channelBuilder<Int>(Channel.BUFFERED) {
 
             emitTestData()
@@ -87,7 +88,7 @@ internal class ChannelBuildersTest {
     }
 
     @Test
-    fun `test BufferedChannel with small buffer`() = runBlockingTest {
+    fun `test BufferedChannel with small buffer`() = runTest(UnconfinedTestDispatcher()) {
         val buffer = 1
 
         val flow: Flow<Int> = channelBuilder<Int>(buffer) {
@@ -104,7 +105,7 @@ internal class ChannelBuildersTest {
     }
 
     @Test
-    fun `test infinite BufferedChannel with small buffer`() = runBlockingTest {
+    fun `test infinite BufferedChannel with small buffer`() = runTest(UnconfinedTestDispatcher()) {
         val buffer = 3
 
         val flow: Flow<Int> = channelBuilder<Int>(buffer) {
@@ -120,7 +121,7 @@ internal class ChannelBuildersTest {
     }
 
     @Test
-    fun `test ConflatedChannel`() = runBlockingTest {
+    fun `test ConflatedChannel`() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = channelBuilder<Int>(Channel.CONFLATED) {
 
             emitTestData()
@@ -135,7 +136,7 @@ internal class ChannelBuildersTest {
     }
 
     @Test
-    fun `test infinite ConflatedChannel`() = runBlockingTest {
+    fun `test infinite ConflatedChannel`() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = channelBuilder<Int>(Channel.CONFLATED) {
 
             emitTestData()
@@ -157,7 +158,7 @@ internal class ChannelBuildersTest {
     }
 
     @Test
-    fun `test unlimited Channel`() = runBlockingTest {
+    fun `test unlimited Channel`() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = channelBuilder<Int>(Channel.UNLIMITED) {
 
             emitTestData()
@@ -172,7 +173,7 @@ internal class ChannelBuildersTest {
     }
 
     @Test
-    fun `test infinite unlimited Channel`() = runBlockingTest {
+    fun `test infinite unlimited Channel`() = runTest(UnconfinedTestDispatcher()) {
         val flow: Flow<Int> = channelBuilder<Int>(Channel.UNLIMITED) {
 
             emitTestData()

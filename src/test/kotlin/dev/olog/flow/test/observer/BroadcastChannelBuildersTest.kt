@@ -3,14 +3,16 @@ package dev.olog.flow.test.observer
 import dev.olog.flow.test.observer.utils.broadcastChannelBuilder
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
+@Suppress("DEPRECATION")
 internal class BroadcastChannelBuildersTest {
 
     private val delay = TimeUnit.SECONDS.toMillis(10)
@@ -19,16 +21,16 @@ internal class BroadcastChannelBuildersTest {
         delay(delay)
         yield()
 
-        offer(1)
+        trySend(1)
         send(2)
-        sendBlocking(3)
+        trySendBlocking(3)
         send(4)
-        offer(5)
+        trySend(5)
     }
 
     // broadcast channel don't support unlimited buffers
     @Test(expected = IllegalArgumentException::class)
-    fun `test unlimited buffer`() = runBlockingTest {
+    fun `test unlimited buffer`() = runTest(UnconfinedTestDispatcher()) {
         val capacity = Channel.UNLIMITED
 
         val flow = broadcastChannelBuilder<Int>(capacity) {
@@ -51,7 +53,7 @@ internal class BroadcastChannelBuildersTest {
 
     // broadcast channel don't support empty buffers
     @Test(expected = IllegalArgumentException::class)
-    fun `test empty buffer`() = runBlockingTest {
+    fun `test empty buffer`() = runTest(UnconfinedTestDispatcher()) {
         val capacity = 0
         val flow = broadcastChannelBuilder<Int>(capacity) {
 
@@ -72,7 +74,7 @@ internal class BroadcastChannelBuildersTest {
     }
 
     @Test
-    fun `test conflated`() = runBlockingTest {
+    fun `test conflated`() = runTest(UnconfinedTestDispatcher()) {
         val flow = broadcastChannelBuilder<Int>(Channel.CONFLATED) {
 
             emitTestData()
@@ -93,7 +95,7 @@ internal class BroadcastChannelBuildersTest {
     }
 
     @Test
-    fun `test conflated infinite`() = runBlockingTest {
+    fun `test conflated infinite`() = runTest(UnconfinedTestDispatcher()) {
 
         val flow = broadcastChannelBuilder<Int>(Channel.CONFLATED) {
 
@@ -122,7 +124,7 @@ internal class BroadcastChannelBuildersTest {
 
     // default buffer is 64 (kotlin 1.3.61)
     @Test
-    fun `test buffered`() = runBlockingTest {
+    fun `test buffered`() = runTest(UnconfinedTestDispatcher()) {
         val flow = broadcastChannelBuilder<Int>(Channel.BUFFERED) {
 
             emitTestData()
@@ -143,7 +145,7 @@ internal class BroadcastChannelBuildersTest {
 
     // default buffer is 64 (kotlin 1.3.61)
     @Test
-    fun `test buffered infinite`() = runBlockingTest {
+    fun `test buffered infinite`() = runTest(UnconfinedTestDispatcher()) {
         val flow = broadcastChannelBuilder<Int>(Channel.BUFFERED) {
 
             emitTestData()
@@ -162,7 +164,7 @@ internal class BroadcastChannelBuildersTest {
     }
 
     @Test
-    fun `test small buffer`() = runBlockingTest {
+    fun `test small buffer`() = runTest(UnconfinedTestDispatcher()) {
         val buffer = 3
 
         val flow = broadcastChannelBuilder<Int>(buffer) {
@@ -185,7 +187,7 @@ internal class BroadcastChannelBuildersTest {
     }
 
     @Test
-    fun `test small buffer infinite`() = runBlockingTest {
+    fun `test small buffer infinite`() = runTest(UnconfinedTestDispatcher()) {
         val buffer = 3
 
         val flow = broadcastChannelBuilder<Int>(buffer) {

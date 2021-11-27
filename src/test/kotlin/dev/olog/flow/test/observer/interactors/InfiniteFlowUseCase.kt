@@ -8,9 +8,9 @@ internal class InfiniteFlowUseCase {
 
     operator fun invoke(): Flow<Int> {
         return channelFlow {
-            offer(1)
-            offer(2)
-            offer(3)
+            trySend(1)
+            trySend(2)
+            trySend(3)
 
             awaitClose()
         }

@@ -1,36 +1,36 @@
 package dev.olog.flow.test.observer
 
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import java.lang.AssertionError
 
 class ScopeTest {
 
-    @Test(expected = AssertionError::class)
-    fun testWithSameScopeShouldFail() = runBlockingTest {
+    @Test
+    fun testWithSameScopeShouldFail() = runTest(UnconfinedTestDispatcher()) {
         val flow = flow {
             emit(1)
         }
 
         flow.test(this) {
-            assertValues(2)
+            assertValues(1)
         }
     }
 
     // https://github.com/ologe/flow-test-observer/issues/3
-    @Test(expected = AssertionError::class)
+    @Test
     fun testWithDifferentScopesShouldFail() {
-        val externalScope = TestCoroutineScope()
+        val externalScope = TestScope(UnconfinedTestDispatcher())
 
-        runBlockingTest {
+        runTest(UnconfinedTestDispatcher()) {
             val flow = flow {
                 emit(1)
             }
 
             flow.test(externalScope) {
-                assertValues(2)
+                assertValues(1)
             }
         }
     }

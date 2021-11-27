@@ -32,7 +32,7 @@ testImplementation "com.github.ologe:flow-test-observer:1.x.y"
 
 ```kotlin
 @Test
-fun `finite flow test`() = runBlockingTest {
+fun `finite flow test`() = runTest(UnconfinedTestDispatcher()) {
     val flow = flowOf(1, 2, 3)   
       
     flow.test(this) {
@@ -44,7 +44,7 @@ fun `finite flow test`() = runBlockingTest {
 
 // works as well with infinite flows 👍
 @Test
-fun `infinite flow test`() = runBlockingTest {
+fun `infinite flow test`() = runTest(UnconfinedTestDispatcher()) {
     val flow = channelFlow<Int> {
         offer(1)
         offer(2)

@@ -1,12 +1,12 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.0'
 }
 
 group 'com.github.ologe'
 project.ext.artifactId = 'flow-test-observer'
-version '1.5.1'
+version '1.6.0'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -16,8 +16,8 @@ repositories {
 }
 
 dependencies {
-    def coroutines = '1.4.2'
-    def junit = '4.13.1'
+    def coroutines = '1.6.0-RC'
+    def junit = '4.13.2'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
     implementation "junit:junit:$junit"
@@ -30,8 +30,9 @@ compileKotlin {
         jvmTarget = "1.8"
         allWarningsAsErrors = true
         freeCompilerArgs += [
-                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-Xuse-experimental=kotlinx.coroutines.FlowPreview"
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.FlowPreview",
+                "-opt-in=kotlinx.coroutines.ObsoleteCoroutinesApi"
         ]
     }
 }
@@ -41,8 +42,9 @@ compileTestKotlin {
         jvmTarget = "1.8"
         allWarningsAsErrors = true
         freeCompilerArgs += [
-                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-Xuse-experimental=kotlinx.coroutines.FlowPreview"
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.FlowPreview",
+                "-opt-in=kotlinx.coroutines.ObsoleteCoroutinesApi"
         ]
     }
 }
