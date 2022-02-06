@@ -1,4 +1,4 @@
-## 1.6.1
+## 1.6.2
 - bump kotlin to `1.6.10`
 - bump coroutines to `1.6.0`
 - `assertValues(vararg T)` message fix
