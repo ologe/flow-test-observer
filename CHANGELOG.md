@@ -1,7 +1,12 @@
+## 1.6.1
+- bump kotlin to `1.6.10`
+- bump coroutines to `1.6.0`
+- `assertValues(vararg T)` message fix
+
 ## 1.6.0
-- bump gradle wrapper to 7.3
-- bump kotlin to 1.6.0
-- bump coroutines to 1.6.0-RC
+- bump gradle wrapper to `7.3`
+- bump kotlin to `1.6.0`
+- bump coroutines to `1.6.0-RC`
 - improved assertion messages, aligned to RxJava3 BaseTestConsumer
 - added new assertions:
   - `assertValues(Iterable<T>)`

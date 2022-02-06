@@ -159,7 +159,7 @@ internal class FlowTestCollectorImpl<T>(
 
     override suspend fun assertValues(vararg values: T): FlowTestCollector<T> {
         if (valuesCount() != values.size) {
-            throw fail("\nexpected: ${values.size} $values\ngot: ${valuesCount()} ${values()}; Value count differs")
+            throw fail("\nexpected: ${values.size} ${values.toList()}\ngot: ${valuesCount()} ${values()}; Value count differs")
         }
         for (i in values().indices) {
             val actual = values()[i]
